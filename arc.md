@@ -1,3 +1,4 @@
+project name:- RemeDi
 You have about **150 minutes from 11:30 to 2:00 PM**. So the architecture needs to look advanced to judges while remaining mechanically simple enough that three AI coding agents can finish it today.
 
 The right design is **not** a giant autonomous AI platform. It is a tightly controlled **LangGraph investigation workflow + synthetic observability environment + sandbox executor + React incident console**.

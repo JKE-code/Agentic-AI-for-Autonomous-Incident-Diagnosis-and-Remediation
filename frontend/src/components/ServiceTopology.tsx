@@ -140,26 +140,24 @@ export const ServiceTopology: React.FC<ServiceTopologyProps> = ({
     const status = getNodeStatus(nodeId);
     const isSelected = selectedNode === nodeId;
 
-    let borderClass = 'border-slate-800 bg-slate-900/60';
+    let borderClass = 'border-slate-200 bg-white shadow-2xs';
     let badge = (
-      <span className="flex items-center gap-1 text-[10px] text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-1.5 py-0.5 rounded">
-        <CheckCircle2 className="w-2.5 h-2.5" /> Healthy
+      <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded">
+        <CheckCircle2 className="w-2.5 h-2.5 text-emerald-600" /> Healthy
       </span>
     );
 
     if (status === 'critical') {
-      borderClass =
-        'border-red-500/80 bg-red-950/30 ring-2 ring-red-500/30 shadow-lg shadow-red-950/50';
+      borderClass = 'border-rose-300 bg-rose-50/40 ring-1 ring-rose-300 shadow-xs';
       badge = (
-        <span className="flex items-center gap-1 text-[10px] font-bold text-red-400 bg-red-950/80 border border-red-500/50 px-1.5 py-0.5 rounded animate-pulse">
+        <span className="flex items-center gap-1 text-[10px] font-semibold text-rose-700 bg-rose-50 border border-rose-200 px-1.5 py-0.5 rounded">
           <Flame className="w-2.5 h-2.5" /> CRITICAL
         </span>
       );
     } else if (status === 'warning') {
-      borderClass =
-        'border-amber-500/60 bg-amber-950/20 ring-1 ring-amber-500/30';
+      borderClass = 'border-amber-300 bg-amber-50/40 ring-1 ring-amber-300 shadow-xs';
       badge = (
-        <span className="flex items-center gap-1 text-[10px] text-amber-300 bg-amber-950/60 border border-amber-500/40 px-1.5 py-0.5 rounded">
+        <span className="flex items-center gap-1 text-[10px] font-semibold text-amber-800 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded">
           <AlertTriangle className="w-2.5 h-2.5" /> Degraded
         </span>
       );
@@ -168,48 +166,48 @@ export const ServiceTopology: React.FC<ServiceTopologyProps> = ({
     return (
       <div
         onClick={() => setSelectedNode(nodeId)}
-        className={`p-3 rounded-xl border cursor-pointer transition-all hover:scale-[1.02] ${borderClass} ${
-          isSelected ? 'ring-2 ring-indigo-500 shadow-md shadow-indigo-950' : ''
+        className={`p-3 rounded-xl border cursor-pointer transition-all hover:border-slate-400 ${borderClass} ${
+          isSelected ? 'ring-2 ring-sky-500 border-sky-500 shadow-xs' : ''
         }`}
       >
         <div className="flex items-center justify-between gap-2 mb-1.5">
           <div className="flex items-center gap-1.5">
             {node.type === 'database' ? (
-              <Database className="w-4 h-4 text-purple-400" />
+              <Database className="w-4 h-4 text-sky-700" />
             ) : (
-              <Server className="w-4 h-4 text-indigo-400" />
+              <Server className="w-4 h-4 text-sky-600" />
             )}
-            <span className="text-xs font-bold text-slate-100">{node.name}</span>
+            <span className="text-xs font-bold text-slate-900">{node.name}</span>
           </div>
           {badge}
         </div>
 
-        <div className="text-[10px] font-mono text-slate-400 mb-2 flex items-center justify-between">
+        <div className="text-[10px] font-mono text-slate-500 mb-2 flex items-center justify-between">
           <span>{node.version}</span>
-          <span className="text-slate-300">{node.metrics.rps} req/s</span>
+          <span className="text-slate-700 font-semibold">{node.metrics.rps} req/s</span>
         </div>
 
         {/* Mini stats */}
-        <div className="grid grid-cols-2 gap-1.5 text-[10px] font-mono pt-1 border-t border-slate-800/60">
+        <div className="grid grid-cols-2 gap-1.5 text-[10px] font-mono pt-1.5 border-t border-slate-100">
           <div className="flex items-center justify-between">
-            <span className="text-slate-500">Error:</span>
+            <span className="text-slate-400">Error:</span>
             <span
               className={
                 node.metrics.errorRate > 1
-                  ? 'text-red-400 font-bold'
-                  : 'text-emerald-400'
+                  ? 'text-rose-600 font-bold'
+                  : 'text-emerald-700 font-medium'
               }
             >
               {node.metrics.errorRate}%
             </span>
           </div>
           <div className="flex items-center justify-between">
-            <span className="text-slate-500">p99:</span>
+            <span className="text-slate-400">p99:</span>
             <span
               className={
                 node.metrics.latencyP99 > 500
-                  ? 'text-red-400 font-bold'
-                  : 'text-slate-300'
+                  ? 'text-rose-600 font-bold'
+                  : 'text-slate-700'
               }
             >
               {node.metrics.latencyP99}ms
@@ -223,15 +221,15 @@ export const ServiceTopology: React.FC<ServiceTopologyProps> = ({
   const selectedNodeData = servicesData[selectedNode];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
       {/* Topology Header */}
-      <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <Server className="w-5 h-5 text-indigo-400" />
+          <h2 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+            <Server className="w-5 h-5 text-sky-600" />
             Production Service Topology & Dependency Map
           </h2>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-500 mt-1">
             Real-time inter-service trace graph with active anomaly telemetry
             and failure cascades.
           </p>
@@ -239,16 +237,16 @@ export const ServiceTopology: React.FC<ServiceTopologyProps> = ({
 
         <div className="flex items-center gap-3 text-xs font-mono">
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
-            <span className="text-slate-300">Operational</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+            <span className="text-slate-700 font-medium">Operational</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
-            <span className="text-slate-300">Degraded</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+            <span className="text-slate-700 font-medium">Degraded</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-400 animate-pulse" />
-            <span className="text-red-400 font-semibold">Critical Impact</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+            <span className="text-rose-700 font-semibold">Critical Impact</span>
           </div>
         </div>
       </div>
@@ -256,41 +254,41 @@ export const ServiceTopology: React.FC<ServiceTopologyProps> = ({
       {/* Main Visual Topology Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Visual Graph Diagram */}
-        <div className="lg:col-span-2 bg-slate-950/80 border border-slate-800/80 rounded-2xl p-6 relative overflow-hidden flex flex-col items-center justify-center">
+        <div className="lg:col-span-2 bg-slate-50/80 border border-slate-200 rounded-2xl p-6 relative overflow-hidden flex flex-col items-center justify-center">
           {/* Subtle grid pattern */}
           <div
-            className="absolute inset-0 opacity-10 pointer-events-none"
+            className="absolute inset-0 opacity-40 pointer-events-none"
             style={{
               backgroundImage:
-                'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.2) 1px, transparent 0)',
+                'radial-gradient(circle at 1px 1px, rgba(148,163,184,0.3) 1px, transparent 0)',
               backgroundSize: '24px 24px',
             }}
           />
 
           {/* Level 1: Ingress Gateway */}
-          <div className="w-64 mb-6 z-10">{renderNodeCard('api-gateway')}</div>
+          <div className="w-64 mb-5 z-10">{renderNodeCard('api-gateway')}</div>
 
           {/* Connectors Down */}
-          <div className="flex items-center justify-center w-full max-w-lg mb-6 text-slate-600">
-            <div className="w-1/3 border-b-2 border-slate-700/60" />
+          <div className="flex items-center justify-center w-full max-w-lg mb-5 text-slate-400">
+            <div className="w-1/3 border-b-2 border-slate-300" />
             <div className="flex flex-col items-center">
-              <ArrowDown className="w-5 h-5 text-indigo-400 animate-bounce" />
+              <ArrowDown className="w-5 h-5 text-sky-600" />
             </div>
-            <div className="w-1/3 border-b-2 border-slate-700/60" />
+            <div className="w-1/3 border-b-2 border-slate-300" />
           </div>
 
           {/* Level 2: Core Microservices */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-2xl mb-6 z-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-2xl mb-5 z-10">
             <div>{renderNodeCard('auth-service')}</div>
             <div>{renderNodeCard('order-service')}</div>
             <div>{renderNodeCard('payment-service')}</div>
           </div>
 
           {/* Connectors to Level 3 */}
-          <div className="flex items-center justify-around w-full max-w-xl mb-4 text-slate-600">
+          <div className="flex items-center justify-around w-full max-w-xl mb-4 text-slate-400">
             <div className="w-12" />
-            <ArrowDown className="w-4 h-4 text-slate-500" />
-            <ArrowDown className="w-4 h-4 text-red-400" />
+            <ArrowDown className="w-4 h-4 text-slate-400" />
+            <ArrowDown className="w-4 h-4 text-rose-500" />
           </div>
 
           {/* Level 3: Downstream & Databases */}
@@ -300,33 +298,33 @@ export const ServiceTopology: React.FC<ServiceTopologyProps> = ({
           </div>
 
           {/* Level 4: Orders DB */}
-          <div className="flex justify-center w-full mt-4">
-            <ArrowDown className="w-4 h-4 text-slate-500 mb-2" />
+          <div className="flex justify-center w-full mt-3">
+            <ArrowDown className="w-4 h-4 text-slate-400 mb-2" />
           </div>
           <div className="w-64 z-10">{renderNodeCard('orders-db')}</div>
         </div>
 
         {/* Selected Node Telemetry Inspector */}
-        <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 mb-4">
               <div className="flex items-center gap-2">
-                <Activity className="w-4 h-4 text-indigo-400" />
-                <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+                <Activity className="w-4 h-4 text-sky-600" />
+                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
                   Service Telemetry
                 </h3>
               </div>
-              <span className="text-xs font-mono text-indigo-400">
+              <span className="text-xs font-mono font-semibold text-sky-700 bg-sky-50 px-2 py-0.5 rounded border border-sky-200">
                 {selectedNodeData.id}
               </span>
             </div>
 
             <div className="space-y-4">
-              <div className="p-3 bg-slate-950/70 rounded-xl border border-slate-800">
-                <span className="text-[11px] text-slate-400 block mb-1">
-                  Active Image / Build:
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                <span className="text-[11px] text-slate-500 block mb-1">
+                  Active Build / Version:
                 </span>
-                <span className="text-xs font-mono font-semibold text-slate-200">
+                <span className="text-xs font-mono font-semibold text-slate-900">
                   {selectedNodeData.version}
                 </span>
               </div>
@@ -335,22 +333,22 @@ export const ServiceTopology: React.FC<ServiceTopologyProps> = ({
               <div className="space-y-3">
                 <div>
                   <div className="flex justify-between text-xs mb-1 font-mono">
-                    <span className="text-slate-400">HTTP Error Rate:</span>
+                    <span className="text-slate-500">HTTP Error Rate:</span>
                     <span
                       className={
                         selectedNodeData.metrics.errorRate > 1
-                          ? 'text-red-400 font-bold'
-                          : 'text-emerald-400'
+                          ? 'text-rose-600 font-bold'
+                          : 'text-emerald-700 font-semibold'
                       }
                     >
                       {selectedNodeData.metrics.errorRate}%
                     </span>
                   </div>
-                  <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                     <div
                       className={`h-full rounded-full ${
                         selectedNodeData.metrics.errorRate > 1
-                          ? 'bg-red-500'
+                          ? 'bg-rose-500'
                           : 'bg-emerald-500'
                       }`}
                       style={{
@@ -365,23 +363,23 @@ export const ServiceTopology: React.FC<ServiceTopologyProps> = ({
 
                 <div>
                   <div className="flex justify-between text-xs mb-1 font-mono">
-                    <span className="text-slate-400">p99 Latency:</span>
+                    <span className="text-slate-500">p99 Latency:</span>
                     <span
                       className={
                         selectedNodeData.metrics.latencyP99 > 500
-                          ? 'text-red-400 font-bold'
-                          : 'text-slate-200'
+                          ? 'text-rose-600 font-bold'
+                          : 'text-slate-800 font-semibold'
                       }
                     >
                       {selectedNodeData.metrics.latencyP99} ms
                     </span>
                   </div>
-                  <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                     <div
                       className={`h-full rounded-full ${
                         selectedNodeData.metrics.latencyP99 > 500
                           ? 'bg-amber-500'
-                          : 'bg-indigo-500'
+                          : 'bg-sky-500'
                       }`}
                       style={{
                         width: `${Math.min(
@@ -395,14 +393,14 @@ export const ServiceTopology: React.FC<ServiceTopologyProps> = ({
 
                 <div>
                   <div className="flex justify-between text-xs mb-1 font-mono">
-                    <span className="text-slate-400">CPU Saturation:</span>
-                    <span className="text-slate-200">
+                    <span className="text-slate-500">CPU Saturation:</span>
+                    <span className="text-slate-800 font-semibold">
                       {selectedNodeData.metrics.cpu}%
                     </span>
                   </div>
-                  <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                     <div
-                      className="bg-purple-500 h-full rounded-full"
+                      className="bg-sky-600 h-full rounded-full"
                       style={{ width: `${selectedNodeData.metrics.cpu}%` }}
                     />
                   </div>
@@ -411,11 +409,11 @@ export const ServiceTopology: React.FC<ServiceTopologyProps> = ({
 
               {/* Diagnostics notes */}
               {selectedNode === 'payment-service' && !isResolved && (
-                <div className="p-3 bg-red-950/40 border border-red-500/40 rounded-xl text-xs space-y-1">
-                  <div className="font-bold text-red-300 flex items-center gap-1.5">
-                    <Flame className="w-3.5 h-3.5" /> Incident Root Cause Hotspot
+                <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs space-y-1">
+                  <div className="font-semibold text-rose-800 flex items-center gap-1.5">
+                    <Flame className="w-3.5 h-3.5 text-rose-600" /> Incident Hotspot
                   </div>
-                  <p className="text-red-200/80 leading-relaxed text-[11px]">
+                  <p className="text-rose-700 leading-relaxed text-[11px]">
                     NPE exception cascade observed in PaymentGatewayClient.java
                     since payment-service:v1.5 was rolled out.
                   </p>
@@ -423,11 +421,11 @@ export const ServiceTopology: React.FC<ServiceTopologyProps> = ({
               )}
 
               {isResolved && (
-                <div className="p-3 bg-emerald-950/40 border border-emerald-500/40 rounded-xl text-xs space-y-1">
-                  <div className="font-bold text-emerald-300 flex items-center gap-1.5">
-                    <ShieldCheck className="w-3.5 h-3.5" /> Node Healthy & Restored
+                <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs space-y-1">
+                  <div className="font-semibold text-emerald-800 flex items-center gap-1.5">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> Node Healthy & Restored
                   </div>
-                  <p className="text-emerald-200/80 leading-relaxed text-[11px]">
+                  <p className="text-emerald-700 leading-relaxed text-[11px]">
                     Service successfully restored to stable image v1.4. Telemetry
                     metrics within normal SLO bounds.
                   </p>
@@ -436,10 +434,10 @@ export const ServiceTopology: React.FC<ServiceTopologyProps> = ({
             </div>
           </div>
 
-          <div className="pt-4 border-t border-slate-800 text-[11px] text-slate-500 font-mono flex items-center justify-between">
+          <div className="pt-4 border-t border-slate-200 text-[11px] text-slate-500 font-mono flex items-center justify-between">
             <span>Container: Docker Engine</span>
             <span className="flex items-center gap-1">
-              <Cpu className="w-3 h-3" /> 4 vCPU / 8GB
+              <Cpu className="w-3 h-3 text-slate-400" /> 4 vCPU / 8GB
             </span>
           </div>
         </div>

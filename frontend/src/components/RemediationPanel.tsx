@@ -74,19 +74,19 @@ export const RemediationPanel: React.FC<RemediationPanelProps> = ({
     switch (riskStr) {
       case 'HIGH':
         return (
-          <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-red-500/20 text-red-400 border border-red-500/40">
+          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-rose-50 text-rose-700 border border-rose-200">
             HIGH RISK
           </span>
         );
       case 'MEDIUM':
         return (
-          <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40">
+          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200">
             MEDIUM RISK
           </span>
         );
       default:
         return (
-          <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+          <span className="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 border border-emerald-200">
             LOW RISK
           </span>
         );
@@ -123,54 +123,54 @@ export const RemediationPanel: React.FC<RemediationPanelProps> = ({
   const latencyAfter = healthAfter.latency_p99_ms || healthAfter.latency_ms || 115;
 
   return (
-    <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-lg backdrop-blur-sm space-y-5 animate-fade-in">
+    <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-5 animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-slate-800">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-slate-200">
         <div>
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-emerald-600" />
             Autonomous Remediation & Human Approval Gate
           </h3>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-500 mt-0.5">
             Strict safety policy: risky remediation actions require explicit operator confirmation before sandbox execution.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           {getRiskBadge(risk)}
-          <span className="font-mono text-xs px-2.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 font-semibold">
+          <span className="font-mono text-xs px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-800 border border-slate-200 font-semibold">
             {remediation.action}
           </span>
         </div>
       </div>
 
       {/* Plan Card */}
-      <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 space-y-3">
+      <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Layers className="w-4 h-4 text-indigo-400" />
-            <span className="text-xs font-bold text-slate-200">
-              Target Service: <span className="text-indigo-300 font-mono">{targetService}</span>
+            <Layers className="w-4 h-4 text-sky-600" />
+            <span className="text-xs font-bold text-slate-800">
+              Target Service: <span className="text-sky-700 font-mono">{targetService}</span>
             </span>
           </div>
-          <span className="text-xs font-mono text-slate-400">
+          <span className="text-xs font-mono text-slate-500">
             Action ID: {remediation.action_id}
           </span>
         </div>
 
-        <p className="text-xs md:text-sm text-slate-200 leading-relaxed">
+        <p className="text-xs md:text-sm text-slate-700 leading-relaxed">
           {explanation}
         </p>
 
         {/* Version Transition & Parameters Diff */}
         {(remediation.current_version || remediation.target_version) && (
-          <div className="p-3 rounded-lg bg-slate-900 border border-slate-800 font-mono text-xs flex items-center gap-3">
-            <span className="text-slate-400 font-semibold">Version Transition:</span>
-            <span className="px-2 py-0.5 rounded bg-red-950/60 border border-red-500/40 text-red-300">
+          <div className="p-3 rounded-lg bg-white border border-slate-200 font-mono text-xs flex items-center gap-3 shadow-2xs">
+            <span className="text-slate-500 font-semibold">Version Transition:</span>
+            <span className="px-2 py-0.5 rounded bg-rose-50 border border-rose-200 text-rose-700 font-medium">
               {remediation.current_version || 'v1.5 (Faulty)'}
             </span>
-            <ArrowRight className="w-4 h-4 text-slate-500" />
-            <span className="px-2 py-0.5 rounded bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 font-bold">
+            <ArrowRight className="w-4 h-4 text-slate-400" />
+            <span className="px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 font-bold">
               {remediation.target_version || 'v1.4 (Stable)'}
             </span>
           </div>
@@ -178,12 +178,12 @@ export const RemediationPanel: React.FC<RemediationPanelProps> = ({
 
         {/* Verification Rule */}
         {remediation.verification && (
-          <div className="text-[11px] text-slate-400 bg-slate-900/60 p-2.5 rounded-lg border border-slate-800 flex items-start gap-2 font-mono">
-            <ShieldCheck className="w-3.5 h-3.5 text-indigo-400 flex-shrink-0 mt-0.5" />
+          <div className="text-[11px] text-slate-600 bg-white p-2.5 rounded-lg border border-slate-200 flex items-start gap-2 font-mono shadow-2xs">
+            <ShieldCheck className="w-3.5 h-3.5 text-sky-600 flex-shrink-0 mt-0.5" />
             <span>
-              <strong className="text-indigo-300">Automated Post-Check:</strong> Verify{' '}
+              <strong className="text-slate-900">Automated Post-Check:</strong> Verify{' '}
               {remediation.verification.metric} meets threshold{' '}
-              <span className="text-emerald-400 font-bold">{remediation.verification.threshold}</span>
+              <span className="text-emerald-700 font-bold">{remediation.verification.threshold}</span>
             </span>
           </div>
         )}
@@ -191,30 +191,30 @@ export const RemediationPanel: React.FC<RemediationPanelProps> = ({
 
       {/* Health Before vs After Comparison */}
       <div className="space-y-2">
-        <span className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-          <Activity className="w-3.5 h-3.5 text-indigo-400" />
+        <span className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+          <Activity className="w-3.5 h-3.5 text-sky-600" />
           Telemetry Health Impact: Before vs After Remediation
         </span>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {/* Error Rate */}
-          <div className="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800 shadow-sm">
-            <span className="text-[11px] text-slate-400 font-mono block mb-1">
+          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs">
+            <span className="text-[11px] text-slate-500 font-mono block mb-1">
               HTTP Error Rate
             </span>
             <div className="flex items-baseline justify-between font-mono">
-              <span className="text-red-400 font-bold text-sm">
+              <span className="text-rose-600 font-bold text-sm">
                 {healthBefore.error_rate}%
               </span>
-              <span className="text-slate-500 text-xs">→</span>
-              <span className="text-emerald-400 font-bold text-sm">
+              <span className="text-slate-400 text-xs">→</span>
+              <span className="text-emerald-700 font-bold text-sm">
                 {isExecuted ? `${healthAfter.error_rate}%` : '---'}
               </span>
             </div>
-            <div className="text-[10px] text-emerald-400/90 mt-1 flex items-center gap-1 font-mono">
+            <div className="text-[10px] text-emerald-700 mt-1 flex items-center gap-1 font-mono font-medium">
               {isExecuted ? (
                 <>
-                  <TrendingDown className="w-3 h-3" />
+                  <TrendingDown className="w-3 h-3 text-emerald-600" />
                   <span>99.2% Drop (Normalized)</span>
                 </>
               ) : (
@@ -224,23 +224,23 @@ export const RemediationPanel: React.FC<RemediationPanelProps> = ({
           </div>
 
           {/* Latency */}
-          <div className="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800 shadow-sm">
-            <span className="text-[11px] text-slate-400 font-mono block mb-1">
+          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs">
+            <span className="text-[11px] text-slate-500 font-mono block mb-1">
               p99 Response Latency
             </span>
             <div className="flex items-baseline justify-between font-mono">
-              <span className="text-red-400 font-bold text-sm">
+              <span className="text-rose-600 font-bold text-sm">
                 {latencyBefore}ms
               </span>
-              <span className="text-slate-500 text-xs">→</span>
-              <span className="text-emerald-400 font-bold text-sm">
+              <span className="text-slate-400 text-xs">→</span>
+              <span className="text-emerald-700 font-bold text-sm">
                 {isExecuted ? `${latencyAfter}ms` : '---'}
               </span>
             </div>
-            <div className="text-[10px] text-emerald-400/90 mt-1 flex items-center gap-1 font-mono">
+            <div className="text-[10px] text-emerald-700 mt-1 flex items-center gap-1 font-mono font-medium">
               {isExecuted ? (
                 <>
-                  <CheckCircle2 className="w-3 h-3" />
+                  <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                   <span>Normalized to SLA &lt; 150ms</span>
                 </>
               ) : (
@@ -250,20 +250,20 @@ export const RemediationPanel: React.FC<RemediationPanelProps> = ({
           </div>
 
           {/* Throughput */}
-          <div className="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800 shadow-sm">
-            <span className="text-[11px] text-slate-400 font-mono block mb-1">
+          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs">
+            <span className="text-[11px] text-slate-500 font-mono block mb-1">
               Service Throughput
             </span>
             <div className="flex items-baseline justify-between font-mono">
-              <span className="text-amber-400 font-bold text-sm">
+              <span className="text-slate-700 font-bold text-sm">
                 {healthBefore.throughput_rps} rps
               </span>
-              <span className="text-slate-500 text-xs">→</span>
-              <span className="text-emerald-400 font-bold text-sm">
+              <span className="text-slate-400 text-xs">→</span>
+              <span className="text-emerald-700 font-bold text-sm">
                 {isExecuted ? `${healthAfter.throughput_rps} rps` : '---'}
               </span>
             </div>
-            <div className="text-[10px] text-emerald-400/90 mt-1 font-mono">
+            <div className="text-[10px] text-emerald-700 mt-1 font-mono font-medium">
               {isExecuted ? '✓ 100% Traffic Restored' : 'Degraded throughput'}
             </div>
           </div>
@@ -272,13 +272,13 @@ export const RemediationPanel: React.FC<RemediationPanelProps> = ({
 
       {/* Live Processing Animation / Steps */}
       {isProcessing && (
-        <div className="p-4 rounded-xl bg-indigo-950/40 border border-indigo-500/50 flex items-center gap-3 animate-pulse">
-          <Bot className="w-5 h-5 text-indigo-400 animate-spin" />
+        <div className="p-4 rounded-xl bg-sky-50 border border-sky-200 flex items-center gap-3 animate-pulse">
+          <Bot className="w-5 h-5 text-sky-600 animate-spin" />
           <div className="space-y-0.5">
-            <span className="text-xs font-semibold text-indigo-200">
+            <span className="text-xs font-semibold text-sky-900">
               Autonomous Remediation Pipeline In Progress
             </span>
-            <p className="text-[11px] font-mono text-indigo-300">
+            <p className="text-[11px] font-mono text-sky-700">
               {stepStatus}
             </p>
           </div>
@@ -286,11 +286,11 @@ export const RemediationPanel: React.FC<RemediationPanelProps> = ({
       )}
 
       {/* Human Approval Gate Controls */}
-      <div className="pt-2 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="pt-2 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
         {isPending ? (
           <>
-            <div className="flex items-center gap-2 text-xs text-amber-300 font-medium">
-              <UserCheck className="w-4 h-4 text-amber-400" />
+            <div className="flex items-center gap-2 text-xs text-slate-700 font-medium">
+              <UserCheck className="w-4 h-4 text-sky-600" />
               <span>Awaiting Human Operator Approval to Execute Sandbox Action</span>
             </div>
 
@@ -298,16 +298,16 @@ export const RemediationPanel: React.FC<RemediationPanelProps> = ({
               <button
                 onClick={handleReject}
                 disabled={isProcessing}
-                className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-semibold transition-colors"
+                className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs font-semibold transition-colors cursor-pointer shadow-2xs"
               >
-                <XCircle className="w-4 h-4 text-rose-400" />
+                <XCircle className="w-4 h-4 text-slate-400" />
                 Reject Action
               </button>
 
               <button
                 onClick={handleApprove}
                 disabled={isProcessing}
-                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs md:text-sm shadow-lg shadow-emerald-600/30 transition-all active:scale-98"
+                className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs md:text-sm shadow-xs transition-all active:scale-98 cursor-pointer"
               >
                 <Play className="w-4 h-4 fill-current" />
                 APPROVE & EXECUTE
@@ -315,14 +315,14 @@ export const RemediationPanel: React.FC<RemediationPanelProps> = ({
             </div>
           </>
         ) : isExecuted ? (
-          <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 p-3 bg-emerald-950/30 border border-emerald-500/40 rounded-xl">
+          <div className="w-full flex flex-col sm:flex-row items-center justify-between gap-3 p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+              <CheckCircle2 className="w-5 h-5 text-emerald-600" />
               <div>
-                <span className="text-xs font-bold text-emerald-300 block">
+                <span className="text-xs font-bold text-emerald-900 block">
                   Remediation Action Executed Successfully
                 </span>
-                <span className="text-[11px] text-emerald-400/80 font-mono">
+                <span className="text-[11px] text-emerald-700 font-mono">
                   Sandbox rollback validated. All post-action health probes PASS.
                 </span>
               </div>
@@ -331,7 +331,7 @@ export const RemediationPanel: React.FC<RemediationPanelProps> = ({
             <button
               onClick={handleRollback}
               disabled={isProcessing}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border border-slate-800 text-xs font-mono transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-slate-600 hover:text-slate-800 border border-slate-200 text-xs font-mono transition-colors cursor-pointer shadow-2xs"
               title="Trigger emergency rollback if anomalies recur"
             >
               <RotateCcw className="w-3.5 h-3.5" />
@@ -339,8 +339,8 @@ export const RemediationPanel: React.FC<RemediationPanelProps> = ({
             </button>
           </div>
         ) : (
-          <div className="w-full p-3 bg-rose-950/30 border border-rose-500/40 rounded-xl flex items-center gap-2 text-rose-300 text-xs font-semibold">
-            <XCircle className="w-4 h-4 text-rose-400" />
+          <div className="w-full p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-center gap-2 text-rose-800 text-xs font-semibold">
+            <XCircle className="w-4 h-4 text-rose-600" />
             Remediation proposal was rejected by operator. Manual intervention active.
           </div>
         )}

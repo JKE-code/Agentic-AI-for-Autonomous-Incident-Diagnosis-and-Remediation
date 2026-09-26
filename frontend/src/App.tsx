@@ -187,7 +187,7 @@ export const App: React.FC = () => {
     incidents.find((i) => i.incident_id === activeIncidentId) || incidents[0];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-indigo-500/30 selection:text-indigo-200">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-sky-500/20 selection:text-sky-900">
       {/* Top Navigation */}
       <Navbar
         activeTab={activeTab}
@@ -222,16 +222,16 @@ export const App: React.FC = () => {
                   />
 
                   {/* Sub-tab navigation for focused inspection */}
-                  <div className="flex items-center gap-1.5 border-b border-slate-800 pb-2 text-xs font-medium overflow-x-auto">
+                  <div className="flex items-center gap-1.5 border-b border-slate-200 pb-2 text-xs font-medium overflow-x-auto">
                     <button
                       onClick={() => {
                         sounds.playBlip();
                         setDetailSubTab('all');
                       }}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                         detailSubTab === 'all'
-                          ? 'bg-slate-800 text-white font-semibold'
-                          : 'text-slate-400 hover:text-slate-200'
+                          ? 'bg-sky-600 text-white font-semibold shadow-2xs'
+                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       }`}
                     >
                       <Activity className="w-3.5 h-3.5" />
@@ -242,13 +242,13 @@ export const App: React.FC = () => {
                         sounds.playBlip();
                         setDetailSubTab('timeline');
                       }}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                         detailSubTab === 'timeline'
-                          ? 'bg-slate-800 text-white font-semibold'
-                          : 'text-slate-400 hover:text-slate-200'
+                          ? 'bg-sky-600 text-white font-semibold shadow-2xs'
+                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       }`}
                     >
-                      <Clock className="w-3.5 h-3.5 text-indigo-400" />
+                      <Clock className="w-3.5 h-3.5" />
                       Timeline ({diagnosis?.timeline?.length || 0})
                     </button>
                     <button
@@ -256,13 +256,13 @@ export const App: React.FC = () => {
                         sounds.playBlip();
                         setDetailSubTab('hypotheses');
                       }}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                         detailSubTab === 'hypotheses'
-                          ? 'bg-slate-800 text-white font-semibold'
-                          : 'text-slate-400 hover:text-slate-200'
+                          ? 'bg-sky-600 text-white font-semibold shadow-2xs'
+                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       }`}
                     >
-                      <BrainCircuit className="w-3.5 h-3.5 text-purple-400" />
+                      <BrainCircuit className="w-3.5 h-3.5" />
                       Hypotheses ({diagnosis?.hypotheses?.length || 0})
                     </button>
                     <button
@@ -270,13 +270,13 @@ export const App: React.FC = () => {
                         sounds.playBlip();
                         setDetailSubTab('evidence');
                       }}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                         detailSubTab === 'evidence'
-                          ? 'bg-slate-800 text-white font-semibold'
-                          : 'text-slate-400 hover:text-slate-200'
+                          ? 'bg-sky-600 text-white font-semibold shadow-2xs'
+                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       }`}
                     >
-                      <BarChart2 className="w-3.5 h-3.5 text-blue-400" />
+                      <BarChart2 className="w-3.5 h-3.5" />
                       Evidence ({diagnosis?.evidence?.length || 0})
                     </button>
                     <button
@@ -284,13 +284,13 @@ export const App: React.FC = () => {
                         sounds.playBlip();
                         setDetailSubTab('remediation');
                       }}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                         detailSubTab === 'remediation'
-                          ? 'bg-slate-800 text-white font-semibold'
-                          : 'text-slate-400 hover:text-slate-200'
+                          ? 'bg-sky-600 text-white font-semibold shadow-2xs'
+                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       }`}
                     >
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                      <ShieldCheck className="w-3.5 h-3.5" />
                       Remediation & Approval
                     </button>
                     <button
@@ -298,13 +298,13 @@ export const App: React.FC = () => {
                         sounds.playBlip();
                         setDetailSubTab('audit');
                       }}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                         detailSubTab === 'audit'
-                          ? 'bg-slate-800 text-white font-semibold'
-                          : 'text-slate-400 hover:text-slate-200'
+                          ? 'bg-sky-600 text-white font-semibold shadow-2xs'
+                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       }`}
                     >
-                      <Terminal className="w-3.5 h-3.5 text-purple-400" />
+                      <Terminal className="w-3.5 h-3.5" />
                       Audit Trail ({diagnosis?.audit_events?.length || 0})
                     </button>
                   </div>
@@ -361,34 +361,34 @@ export const App: React.FC = () => {
         )}
 
         {/* Live Multi-Agent Execution Terminal Drawer */}
-        <div className="fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 border-t border-slate-800 shadow-2xl backdrop-blur-md transition-all">
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 border-t border-slate-200 shadow-xl backdrop-blur-md transition-all">
           <div
             onClick={() => setTerminalOpen(!terminalOpen)}
-            className="px-4 py-2 flex items-center justify-between cursor-pointer hover:bg-slate-900/60 select-none border-b border-slate-900"
+            className="px-4 py-2 flex items-center justify-between cursor-pointer hover:bg-slate-50 select-none border-b border-slate-100"
           >
-            <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
-              <Terminal className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="font-bold text-slate-200">Live Agentic Telemetry Stream</span>
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse ml-1" />
+            <div className="flex items-center gap-2 text-xs font-mono text-slate-700">
+              <Terminal className="w-3.5 h-3.5 text-sky-600" />
+              <span className="font-bold text-slate-900">Live Agentic Telemetry Stream</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse ml-1" />
               <span className="text-[10px] text-slate-500 hidden sm:inline">
                 (LangGraph Multi-Agent Execution Trace)
               </span>
             </div>
 
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <span className="text-[10px] font-mono text-slate-500">
+            <div className="flex items-center gap-2 text-xs text-slate-500">
+              <span className="text-[10px] font-mono text-slate-500 font-medium">
                 {agentLogs.length} events
               </span>
               {terminalOpen ? (
-                <ChevronDown className="w-4 h-4" />
+                <ChevronDown className="w-4 h-4 text-slate-600" />
               ) : (
-                <ChevronUp className="w-4 h-4" />
+                <ChevronUp className="w-4 h-4 text-slate-600" />
               )}
             </div>
           </div>
 
           {terminalOpen && (
-            <div className="p-3 max-h-48 overflow-y-auto font-mono text-[11px] text-slate-300 space-y-1 bg-slate-950/90 divide-y divide-slate-900/40">
+            <div className="p-3 max-h-48 overflow-y-auto font-mono text-[11px] bg-slate-900 text-slate-200 space-y-1 divide-y divide-slate-800/60 shadow-inner">
               {agentLogs.map((log, idx) => (
                 <div
                   key={idx}
@@ -398,7 +398,7 @@ export const App: React.FC = () => {
                       : log.includes('[OPERATOR]')
                       ? 'text-amber-300'
                       : log.includes('[LangGraph]')
-                      ? 'text-indigo-400'
+                      ? 'text-sky-400'
                       : 'text-slate-300'
                   }`}
                 >
