@@ -11,6 +11,7 @@ import { RemediationPanel } from './components/RemediationPanel';
 import { AuditTrail } from './components/AuditTrail';
 import { ServiceTopology } from './components/ServiceTopology';
 import { EvaluationDashboard } from './components/EvaluationDashboard';
+import { ScenarioBar } from './components/ScenarioBar';
 import {
   Activity,
   Clock,
@@ -20,6 +21,8 @@ import {
   Terminal,
   ChevronUp,
   ChevronDown,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-react';
 import { sounds } from './utils/audio';
 
@@ -28,6 +31,7 @@ export const App: React.FC = () => {
   const [detailSubTab, setDetailSubTab] = useState<
     'all' | 'timeline' | 'hypotheses' | 'evidence' | 'remediation' | 'audit'
   >('all');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [activeIncidentId, setActiveIncidentId] = useState<string>('INC-001');
@@ -198,19 +202,67 @@ export const App: React.FC = () => {
         activeIncidentId={activeIncidentId}
       />
 
+      {/* Top Scenario Switcher & Guided Diagnostic Pipeline */}
+      {activeTab === 'command-center' && (
+        <ScenarioBar
+          incidents={incidents}
+          activeIncidentId={activeIncidentId}
+          onSelectIncident={handleSelectIncident}
+          activeStep={
+            detailSubTab === 'timeline'
+              ? 'telemetry'
+              : detailSubTab === 'hypotheses' || detailSubTab === 'evidence'
+              ? 'hypotheses'
+              : detailSubTab === 'remediation'
+              ? 'remediation'
+              : 'all'
+          }
+          onSelectStep={(step) => {
+            if (step === 'telemetry') setDetailSubTab('timeline');
+            else if (step === 'hypotheses') setDetailSubTab('hypotheses');
+            else if (step === 'remediation') setDetailSubTab('remediation');
+            else setDetailSubTab('all');
+          }}
+        />
+      )}
+
       {/* Main View Area */}
       <div className="flex-1 flex flex-col overflow-hidden relative">
         {activeTab === 'command-center' ? (
-          <div className="flex-1 flex flex-col md:flex-row h-[calc(100vh-65px)] overflow-hidden">
-            {/* Left Sidebar: Incidents */}
-            <IncidentSidebar
-              incidents={incidents}
-              activeIncidentId={activeIncidentId}
-              onSelectIncident={handleSelectIncident}
-            />
+          <div className="flex-1 flex flex-col md:flex-row h-[calc(100vh-115px)] overflow-hidden">
+            {/* Left Sidebar: Incidents (collapsible) */}
+            {!sidebarCollapsed ? (
+              <div className="relative flex-shrink-0 flex">
+                <IncidentSidebar
+                  incidents={incidents}
+                  activeIncidentId={activeIncidentId}
+                  onSelectIncident={handleSelectIncident}
+                />
+                <button
+                  onClick={() => setSidebarCollapsed(true)}
+                  className="hidden md:flex absolute top-3 -right-3 z-20 w-6 h-6 rounded-full bg-white border border-slate-200 text-slate-500 hover:text-slate-800 shadow-sm items-center justify-center cursor-pointer hover:border-slate-300"
+                  title="Collapse sidebar for wider visual workspace"
+                >
+                  <PanelLeftClose className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ) : (
+              <div className="hidden md:flex flex-col items-center py-4 px-2 bg-white border-r border-slate-200 gap-3 flex-shrink-0">
+                <button
+                  onClick={() => setSidebarCollapsed(false)}
+                  className="w-8 h-8 rounded-lg bg-sky-50 text-sky-700 hover:bg-sky-100 border border-sky-200 flex items-center justify-center cursor-pointer shadow-2xs"
+                  title="Expand Incident Sidebar"
+                >
+                  <PanelLeftOpen className="w-4 h-4" />
+                </button>
+                <span className="text-[10px] font-mono text-slate-400 rotate-90 my-8 tracking-widest uppercase font-semibold">
+                  Incidents
+                </span>
+              </div>
+            )}
 
             {/* Right Pane: Command Center Main Workspace */}
-            <main className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 pb-16">
+            <main className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 pb-20">
               {activeIncident && (
                 <>
                   {/* Incident Header Overview */}
@@ -230,7 +282,7 @@ export const App: React.FC = () => {
                       }}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                         detailSubTab === 'all'
-                          ? 'bg-sky-600 text-white font-semibold shadow-2xs'
+                          ? 'bg-sky-600 text-white font-bold shadow-sky-glow'
                           : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       }`}
                     >
@@ -244,7 +296,7 @@ export const App: React.FC = () => {
                       }}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                         detailSubTab === 'timeline'
-                          ? 'bg-sky-600 text-white font-semibold shadow-2xs'
+                          ? 'bg-sky-600 text-white font-bold shadow-sky-glow'
                           : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       }`}
                     >
@@ -258,7 +310,7 @@ export const App: React.FC = () => {
                       }}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                         detailSubTab === 'hypotheses'
-                          ? 'bg-sky-600 text-white font-semibold shadow-2xs'
+                          ? 'bg-sky-600 text-white font-bold shadow-sky-glow'
                           : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       }`}
                     >
@@ -272,7 +324,7 @@ export const App: React.FC = () => {
                       }}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                         detailSubTab === 'evidence'
-                          ? 'bg-sky-600 text-white font-semibold shadow-2xs'
+                          ? 'bg-sky-600 text-white font-bold shadow-sky-glow'
                           : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       }`}
                     >
@@ -286,7 +338,7 @@ export const App: React.FC = () => {
                       }}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                         detailSubTab === 'remediation'
-                          ? 'bg-sky-600 text-white font-semibold shadow-2xs'
+                          ? 'bg-sky-600 text-white font-bold shadow-sky-glow'
                           : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       }`}
                     >
@@ -300,7 +352,7 @@ export const App: React.FC = () => {
                       }}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                         detailSubTab === 'audit'
-                          ? 'bg-sky-600 text-white font-semibold shadow-2xs'
+                          ? 'bg-sky-600 text-white font-bold shadow-sky-glow'
                           : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       }`}
                     >

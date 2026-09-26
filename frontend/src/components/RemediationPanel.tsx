@@ -6,7 +6,6 @@ import {
   XCircle,
   Play,
   RotateCcw,
-  Activity,
   Layers,
   Bot,
   UserCheck,
@@ -14,6 +13,7 @@ import {
   TrendingDown,
 } from 'lucide-react';
 import { sounds } from '../utils/audio';
+import { HealthComparisonChart } from './charts/HealthComparisonChart';
 
 interface RemediationPanelProps {
   remediation: Remediation;
@@ -189,12 +189,13 @@ export const RemediationPanel: React.FC<RemediationPanelProps> = ({
         )}
       </div>
 
-      {/* Health Before vs After Comparison */}
-      <div className="space-y-2">
-        <span className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-          <Activity className="w-3.5 h-3.5 text-sky-600" />
-          Telemetry Health Impact: Before vs After Remediation
-        </span>
+      {/* Health Before vs After Visual Chart & KPI Cards */}
+      <div className="space-y-3">
+        <HealthComparisonChart
+          healthBefore={healthBefore}
+          healthAfter={healthAfter}
+          isExecuted={isExecuted}
+        />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           {/* Error Rate */}

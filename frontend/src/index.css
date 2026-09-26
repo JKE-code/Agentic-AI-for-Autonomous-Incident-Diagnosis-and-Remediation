@@ -14,6 +14,21 @@
   }
 }
 
+/* Rich Sky Blue & Clouds Palette Helpers */
+:root {
+  --sky-primary: #0284c7;
+  --sky-hover: #0369a1;
+  --sky-active: #075985;
+  --sky-tint: #f0f9ff;
+  --sky-border: #bae6fd;
+  --grass-primary: #16a34a;
+  --grass-hover: #15803d;
+  --grass-tint: #f0fdf4;
+  --grass-border: #bbf7d0;
+  --clouds-white: #ffffff;
+  --clouds-surface: #f8fafc;
+}
+
 /* Crisp Clean Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
@@ -32,8 +47,8 @@
 
 /* Subtle enterprise pulse */
 @keyframes soft-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.75; transform: scale(1.02); }
 }
 
 .animate-soft-pulse {
@@ -66,4 +81,13 @@
 .card-clean:hover {
   border-color: #cbd5e1;
   box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+}
+
+/* Sky Blue Glow */
+.shadow-sky-glow {
+  box-shadow: 0 4px 14px -2px rgba(2, 132, 199, 0.2);
+}
+
+.shadow-emerald-glow {
+  box-shadow: 0 4px 14px -2px rgba(22, 163, 74, 0.2);
 }

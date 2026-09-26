@@ -14,6 +14,7 @@ import {
   Search,
 } from 'lucide-react';
 import { sounds } from '../utils/audio';
+import { EvaluationChart } from './charts/EvaluationChart';
 
 interface EvaluationDashboardProps {
   evaluation: SystemEvaluation;
@@ -212,6 +213,9 @@ export const EvaluationDashboard: React.FC<EvaluationDashboardProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Visual Recharts Head-to-Head Comparison */}
+      <EvaluationChart evaluation={evaluation} />
 
       {/* Calibration Card */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
