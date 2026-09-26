@@ -1,18 +1,31 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Evidence",
+  "description": "Structured observability evidence supporting or contradicting hypotheses",
   "type": "object",
-  "required": ["evidence_id", "source", "timestamp", "service", "observation", "importance", "supports", "contradicts", "confidence"],
+  "required": [
+    "evidence_id",
+    "source",
+    "timestamp",
+    "service",
+    "observation",
+    "importance",
+    "supports",
+    "contradicts",
+    "confidence"
+  ],
   "properties": {
     "evidence_id": {
-      "type": "string"
+      "type": "string",
+      "example": "E-001"
     },
     "source": {
       "type": "string",
       "enum": ["logs", "metrics", "traces", "deployments", "dependencies", "diagnostics"]
     },
     "timestamp": {
-      "type": "string"
+      "type": "string",
+      "format": "date-time"
     },
     "service": {
       "type": "string"
@@ -37,6 +50,10 @@
       "type": "number",
       "minimum": 0,
       "maximum": 1
+    },
+    "raw_ref": {
+      "type": "object",
+      "description": "Optional reference to underlying log line, trace ID, or metric timestamp"
     }
   }
 }

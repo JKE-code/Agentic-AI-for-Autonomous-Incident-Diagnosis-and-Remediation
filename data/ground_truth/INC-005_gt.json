@@ -1,0 +1,15 @@
+{
+  "scenario_id": "INC-005",
+  "root_cause": "CPU_SATURATION",
+  "affected_service": "order-service",
+  "expected_remediation": "scale_service",
+  "remediation_parameters": {
+    "service": "order-service",
+    "replicas": 4
+  },
+  "key_evidence_signatures": [
+    "order_service_cpu_99pct",
+    "queue_depth_420",
+    "thread_pool_exhaustion"
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "incident_id": "INC-006",
+  "title": "Inter-service network latency spike between API Gateway and Order Service",
+  "severity": "MEDIUM",
+  "started_at": "2026-09-26T13:00:35Z",
+  "services": [
+    "api-gateway",
+    "order-service"
+  ],
+  "logs": [
+    {
+      "timestamp": "2026-09-26T13:00:35Z",
+      "service": "api-gateway",
+      "level": "WARN",
+      "message": "High TCP RTT observed connecting to order-service pod subnet (rtt=850ms)"
+    },
+    {
+      "timestamp": "2026-09-26T13:00:50Z",
+      "service": "api-gateway",
+      "level": "WARN",
+      "message": "Client request roundtrip degraded to 920ms despite backend processing taking only 12ms"
+    },
+    {
+      "timestamp": "2026-09-26T13:01:05Z",
+      "service": "order-service",
+      "level": "INFO",
+      "message": "Local order processing nominal (average CPU 16%, internal dispatch 11ms)"
+    }
+  ],
+  "metrics": [
+    {
+      "timestamp": "2026-09-26T13:00:00Z",
+      "service": "api-gateway",
+      "metric_name": "network_rtt_order_service",
+      "value": 2.1,
+      "unit": "ms"
+    },
+    {
+      "timestamp": "2026-09-26T13:00:40Z",
+      "service": "api-gateway",
+      "metric_name": "network_rtt_order_service",
+      "value": 850.0,
+      "unit": "ms"
+    },
+    {
+      "timestamp": "2026-09-26T13:01:00Z",
+      "service": "api-gateway",
+      "metric_name": "network_packet_retransmit_rate",
+      "value": 0.14,
+      "unit": "percentage"
+    },
+    {
+      "timestamp": "2026-09-26T13:01:00Z",
+      "service": "order-service",
+      "metric_name": "cpu_utilization",
+      "value": 16.0,
+      "unit": "percentage"
+    },
+    {
+      "timestamp": "2026-09-26T13:01:00Z",
+      "service": "order-service",
+      "metric_name": "memory_rss_bytes",
+      "value": 419430400.0,
+      "unit": "bytes"
+    }
+  ],
+  "traces": [
+    {
+      "trace_id": "tr-net-601",
+      "span_id": "sp-gw-6",
+      "parent_span_id": null,
+      "service": "api-gateway",
+      "operation": "GET /api/orders/user/991",
+      "duration_ms": 865.0,
+      "status_code": 200,
+      "timestamp": "2026-09-26T13:00:50Z",
+      "error": false
+    },
+    {
+      "trace_id": "tr-net-601",
+      "span_id": "sp-ord-6",
+      "parent_span_id": "sp-gw-6",
+      "service": "order-service",
+      "operation": "GetOrdersByUser",
+      "duration_ms": 12.0,
+      "status_code": 200,
+      "timestamp": "2026-09-26T13:00:50Z",
+      "error": false
+    }
+  ],
+  "deployments": [],
+  "dependencies": [
+    {
+      "source": "api-gateway",
+      "target": "auth-service",
+      "type": "sync_http",
+      "critical": true
+    },
+    {
+      "source": "api-gateway",
+      "target": "order-service",
+      "type": "sync_http",
+      "critical": true
+    },
+    {
+      "source": "api-gateway",
+      "target": "payment-service",
+      "type": "sync_http",
+      "critical": true
+    },
+    {
+      "source": "order-service",
+      "target": "inventory-service",
+      "type": "sync_http",
+      "critical": true
+    },
+    {
+      "source": "order-service",
+      "target": "orders-db",
+      "type": "database",
+      "critical": true
+    },
+    {
+      "source": "order-service",
+      "target": "payment-service",
+      "type": "sync_http",
+      "critical": true
+    },
+    {
+      "source": "payment-service",
+      "target": "payment-db",
+      "type": "database",
+      "critical": true
+    },
+    {
+      "source": "payment-service",
+      "target": "external-payment-provider",
+      "type": "external_api",
+      "critical": false
+    }
+  ]
+}

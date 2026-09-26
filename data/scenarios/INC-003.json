@@ -1,0 +1,159 @@
+{
+  "incident_id": "INC-003",
+  "title": "Payment service memory leak leading to OOM crash",
+  "severity": "CRITICAL",
+  "started_at": "2026-09-26T12:03:00Z",
+  "services": [
+    "payment-service",
+    "api-gateway"
+  ],
+  "logs": [
+    {
+      "timestamp": "2026-09-26T12:01:00Z",
+      "service": "payment-service",
+      "level": "WARN",
+      "message": "JVM GC pause time elevated: Full GC took 1420ms, reclaimed only 12MB"
+    },
+    {
+      "timestamp": "2026-09-26T12:02:00Z",
+      "service": "payment-service",
+      "level": "WARN",
+      "message": "High heap memory utilization: 92% of 3072MB allocated"
+    },
+    {
+      "timestamp": "2026-09-26T12:03:00Z",
+      "service": "payment-service",
+      "level": "FATAL",
+      "message": "java.lang.OutOfMemoryError: Java heap space at com.pay.cache.UnboundedTokenStore.put",
+      "error_code": "ERR_OOM"
+    },
+    {
+      "timestamp": "2026-09-26T12:03:05Z",
+      "service": "payment-service",
+      "level": "FATAL",
+      "message": "Container received SIGKILL: Out of memory (OOMKilled by Linux kernel cgroup memory controller)"
+    },
+    {
+      "timestamp": "2026-09-26T12:03:15Z",
+      "service": "api-gateway",
+      "level": "ERROR",
+      "message": "Connection refused to payment-service:8080 (container crashed)"
+    }
+  ],
+  "metrics": [
+    {
+      "timestamp": "2026-09-26T12:00:00Z",
+      "service": "payment-service",
+      "metric_name": "memory_rss_bytes",
+      "value": 1288490188.0,
+      "unit": "bytes"
+    },
+    {
+      "timestamp": "2026-09-26T12:01:00Z",
+      "service": "payment-service",
+      "metric_name": "memory_rss_bytes",
+      "value": 1825361100.0,
+      "unit": "bytes"
+    },
+    {
+      "timestamp": "2026-09-26T12:02:00Z",
+      "service": "payment-service",
+      "metric_name": "memory_rss_bytes",
+      "value": 2469606195.0,
+      "unit": "bytes"
+    },
+    {
+      "timestamp": "2026-09-26T12:03:00Z",
+      "service": "payment-service",
+      "metric_name": "memory_rss_bytes",
+      "value": 3113851289.0,
+      "unit": "bytes"
+    },
+    {
+      "timestamp": "2026-09-26T12:03:00Z",
+      "service": "payment-service",
+      "metric_name": "memory_limit_bytes",
+      "value": 3221225472.0,
+      "unit": "bytes"
+    },
+    {
+      "timestamp": "2026-09-26T12:03:00Z",
+      "service": "payment-service",
+      "metric_name": "gc_pause_seconds",
+      "value": 2.45,
+      "unit": "seconds"
+    },
+    {
+      "timestamp": "2026-09-26T12:03:00Z",
+      "service": "payment-service",
+      "metric_name": "cpu_utilization",
+      "value": 32.0,
+      "unit": "percentage"
+    }
+  ],
+  "traces": [
+    {
+      "trace_id": "tr-oom-1",
+      "span_id": "sp-gw-3",
+      "parent_span_id": null,
+      "service": "api-gateway",
+      "operation": "POST /api/pay",
+      "duration_ms": 2500.0,
+      "status_code": 502,
+      "timestamp": "2026-09-26T12:03:06Z",
+      "error": true,
+      "error_message": "502 Bad Gateway: Connection reset by peer"
+    }
+  ],
+  "deployments": [],
+  "dependencies": [
+    {
+      "source": "api-gateway",
+      "target": "auth-service",
+      "type": "sync_http",
+      "critical": true
+    },
+    {
+      "source": "api-gateway",
+      "target": "order-service",
+      "type": "sync_http",
+      "critical": true
+    },
+    {
+      "source": "api-gateway",
+      "target": "payment-service",
+      "type": "sync_http",
+      "critical": true
+    },
+    {
+      "source": "order-service",
+      "target": "inventory-service",
+      "type": "sync_http",
+      "critical": true
+    },
+    {
+      "source": "order-service",
+      "target": "orders-db",
+      "type": "database",
+      "critical": true
+    },
+    {
+      "source": "order-service",
+      "target": "payment-service",
+      "type": "sync_http",
+      "critical": true
+    },
+    {
+      "source": "payment-service",
+      "target": "payment-db",
+      "type": "database",
+      "critical": true
+    },
+    {
+      "source": "payment-service",
+      "target": "external-payment-provider",
+      "type": "external_api",
+      "critical": false
+    }
+  ]
+}

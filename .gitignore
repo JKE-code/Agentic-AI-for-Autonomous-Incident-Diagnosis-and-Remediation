@@ -10,12 +10,14 @@ venv/
 *.egg-info/
 dist/
 build/
+.pytest_cache/
 .env
 *.env
 .env.*
 
 # Database & local state
 *.db
+*.sqlite
 *.sqlite3
 incidents.db
 

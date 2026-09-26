@@ -1,19 +1,32 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Incident",
+  "description": "Standardized incident object containing metadata and raw synthetic telemetry",
   "type": "object",
-  "required": ["incident_id", "title", "severity", "started_at", "services"],
+  "required": [
+    "incident_id",
+    "title",
+    "severity",
+    "started_at",
+    "services",
+    "logs",
+    "metrics",
+    "traces",
+    "deployments",
+    "dependencies"
+  ],
   "properties": {
     "incident_id": {
       "type": "string",
-      "pattern": "^INC-\\d{3,}$"
+      "example": "INC-001"
     },
     "title": {
-      "type": "string"
+      "type": "string",
+      "example": "Payment failures after deployment"
     },
     "severity": {
       "type": "string",
-      "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
+      "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
     },
     "started_at": {
       "type": "string",
@@ -27,11 +40,14 @@
       "type": "array",
       "items": {
         "type": "object",
+        "required": ["timestamp", "service", "level", "message"],
         "properties": {
           "timestamp": { "type": "string" },
           "service": { "type": "string" },
-          "level": { "type": "string" },
-          "message": { "type": "string" }
+          "level": { "type": "string", "enum": ["DEBUG", "INFO", "WARN", "ERROR", "FATAL"] },
+          "message": { "type": "string" },
+          "trace_id": { "type": "string" },
+          "error_code": { "type": "string" }
         }
       }
     },
@@ -39,6 +55,7 @@
       "type": "array",
       "items": {
         "type": "object",
+        "required": ["timestamp", "service", "metric_name", "value", "unit"],
         "properties": {
           "timestamp": { "type": "string" },
           "service": { "type": "string" },
@@ -52,13 +69,18 @@
       "type": "array",
       "items": {
         "type": "object",
+        "required": ["trace_id", "service", "operation", "duration_ms", "status_code"],
         "properties": {
           "trace_id": { "type": "string" },
           "span_id": { "type": "string" },
+          "parent_span_id": { "type": ["string", "null"] },
           "service": { "type": "string" },
           "operation": { "type": "string" },
           "duration_ms": { "type": "number" },
-          "status_code": { "type": "integer" }
+          "status_code": { "type": "integer" },
+          "timestamp": { "type": "string" },
+          "error": { "type": "boolean" },
+          "error_message": { "type": "string" }
         }
       }
     },
@@ -66,11 +88,16 @@
       "type": "array",
       "items": {
         "type": "object",
+        "required": ["deployment_id", "service", "version", "deployed_at", "status"],
         "properties": {
-          "timestamp": { "type": "string" },
+          "deployment_id": { "type": "string" },
           "service": { "type": "string" },
           "version": { "type": "string" },
-          "commit": { "type": "string" }
+          "previous_version": { "type": "string" },
+          "deployed_at": { "type": "string" },
+          "status": { "type": "string", "enum": ["SUCCESS", "FAILED", "ROLLED_BACK"] },
+          "commit_hash": { "type": "string" },
+          "changelog": { "type": "string" }
         }
       }
     },
@@ -78,10 +105,12 @@
       "type": "array",
       "items": {
         "type": "object",
+        "required": ["source", "target", "type"],
         "properties": {
-          "caller": { "type": "string" },
-          "callee": { "type": "string" },
-          "type": { "type": "string" }
+          "source": { "type": "string" },
+          "target": { "type": "string" },
+          "type": { "type": "string", "enum": ["sync_http", "async_queue", "database", "cache", "external_api"] },
+          "critical": { "type": "boolean" }
         }
       }
     }

@@ -1,0 +1,15 @@
+{
+  "scenario_id": "INC-004",
+  "root_cause": "DOWNSTREAM_FAILURE",
+  "affected_service": "external-payment-provider",
+  "expected_remediation": "disable_dependency",
+  "remediation_parameters": {
+    "service": "payment-service",
+    "dependency": "external-payment-provider"
+  },
+  "key_evidence_signatures": [
+    "external_provider_504_timeout",
+    "circuit_breaker_open",
+    "internal_service_cpu_healthy"
+  ]
+}

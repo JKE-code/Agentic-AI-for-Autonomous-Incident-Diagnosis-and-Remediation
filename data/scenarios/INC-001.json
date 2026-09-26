@@ -1,0 +1,228 @@
+{
+  "incident_id": "INC-001",
+  "title": "Payment failures and HTTP 500 spike after deployment",
+  "severity": "CRITICAL",
+  "started_at": "2026-09-26T10:41:02Z",
+  "services": [
+    "api-gateway",
+    "payment-service",
+    "payment-db"
+  ],
+  "logs": [
+    {
+      "timestamp": "2026-09-26T10:40:00Z",
+      "service": "payment-service",
+      "level": "INFO",
+      "message": "payment-service v1.4 healthy, handling 240 req/min"
+    },
+    {
+      "timestamp": "2026-09-26T10:41:02Z",
+      "service": "payment-service",
+      "level": "INFO",
+      "message": "Deployment v1.5 activation complete. Starting worker processes."
+    },
+    {
+      "timestamp": "2026-09-26T10:41:15Z",
+      "service": "payment-service",
+      "level": "WARN",
+      "message": "Deprecated payment schema detected in request payload"
+    },
+    {
+      "timestamp": "2026-09-26T10:41:20Z",
+      "service": "payment-service",
+      "level": "ERROR",
+      "message": "NullPointerException at com.pay.handler.v15.CheckoutHandler.processPayment (CheckoutHandler.java:142)",
+      "trace_id": "tr-pay-001",
+      "error_code": "ERR_NULL_PTR"
+    },
+    {
+      "timestamp": "2026-09-26T10:41:30Z",
+      "service": "payment-service",
+      "level": "FATAL",
+      "message": "Failed to serialize payment token: Incompatible schema version v1.5",
+      "trace_id": "tr-pay-002",
+      "error_code": "ERR_SCHEMA_INCOMPAT"
+    },
+    {
+      "timestamp": "2026-09-26T10:41:45Z",
+      "service": "api-gateway",
+      "level": "ERROR",
+      "message": "Upstream service payment-service returned HTTP 500 Internal Server Error",
+      "trace_id": "tr-gw-101"
+    },
+    {
+      "timestamp": "2026-09-26T10:42:00Z",
+      "service": "payment-service",
+      "level": "ERROR",
+      "message": "High failure rate: 42/50 checkout requests failing in v1.5 container",
+      "error_code": "ERR_CHECKOUT_FAILED"
+    }
+  ],
+  "metrics": [
+    {
+      "timestamp": "2026-09-26T10:40:00Z",
+      "service": "payment-service",
+      "metric_name": "error_rate",
+      "value": 0.002,
+      "unit": "percentage"
+    },
+    {
+      "timestamp": "2026-09-26T10:41:00Z",
+      "service": "payment-service",
+      "metric_name": "error_rate",
+      "value": 0.005,
+      "unit": "percentage"
+    },
+    {
+      "timestamp": "2026-09-26T10:41:30Z",
+      "service": "payment-service",
+      "metric_name": "error_rate",
+      "value": 0.187,
+      "unit": "percentage"
+    },
+    {
+      "timestamp": "2026-09-26T10:42:00Z",
+      "service": "payment-service",
+      "metric_name": "error_rate",
+      "value": 0.235,
+      "unit": "percentage"
+    },
+    {
+      "timestamp": "2026-09-26T10:40:00Z",
+      "service": "payment-service",
+      "metric_name": "latency_p95",
+      "value": 45.0,
+      "unit": "ms"
+    },
+    {
+      "timestamp": "2026-09-26T10:41:30Z",
+      "service": "payment-service",
+      "metric_name": "latency_p95",
+      "value": 1150.0,
+      "unit": "ms"
+    },
+    {
+      "timestamp": "2026-09-26T10:41:30Z",
+      "service": "payment-service",
+      "metric_name": "cpu_utilization",
+      "value": 24.5,
+      "unit": "percentage"
+    },
+    {
+      "timestamp": "2026-09-26T10:41:30Z",
+      "service": "payment-db",
+      "metric_name": "db_connections",
+      "value": 15.0,
+      "unit": "count"
+    }
+  ],
+  "traces": [
+    {
+      "trace_id": "tr-pay-001",
+      "span_id": "sp-gw-1",
+      "parent_span_id": null,
+      "service": "api-gateway",
+      "operation": "POST /api/pay",
+      "duration_ms": 1180.0,
+      "status_code": 500,
+      "timestamp": "2026-09-26T10:41:20Z",
+      "error": true,
+      "error_message": "Upstream 500"
+    },
+    {
+      "trace_id": "tr-pay-001",
+      "span_id": "sp-pay-1",
+      "parent_span_id": "sp-gw-1",
+      "service": "payment-service",
+      "operation": "CheckoutHandler.processPayment",
+      "duration_ms": 1160.0,
+      "status_code": 500,
+      "timestamp": "2026-09-26T10:41:20Z",
+      "error": true,
+      "error_message": "NullPointerException at CheckoutHandler.java:142"
+    },
+    {
+      "trace_id": "tr-pay-001",
+      "span_id": "sp-db-1",
+      "parent_span_id": "sp-pay-1",
+      "service": "payment-db",
+      "operation": "SELECT account_balance",
+      "duration_ms": 4.5,
+      "status_code": 200,
+      "timestamp": "2026-09-26T10:41:20Z",
+      "error": false
+    }
+  ],
+  "deployments": [
+    {
+      "deployment_id": "dep-092",
+      "service": "payment-service",
+      "version": "v1.4",
+      "previous_version": "v1.3",
+      "deployed_at": "2026-09-25T10:40:00Z",
+      "status": "SUCCESS",
+      "commit_hash": "a4f891b",
+      "changelog": "Standard billing maintenance"
+    },
+    {
+      "deployment_id": "dep-093",
+      "service": "payment-service",
+      "version": "v1.5",
+      "previous_version": "v1.4",
+      "deployed_at": "2026-09-26T10:41:02Z",
+      "status": "SUCCESS",
+      "commit_hash": "c91e48f",
+      "changelog": "New payment serialization logic and updated SDK"
+    }
+  ],
+  "dependencies": [
+    {
+      "source": "api-gateway",
+      "target": "auth-service",
+      "type": "sync_http",
+      "critical": true
+    },
+    {
+      "source": "api-gateway",
+      "target": "order-service",
+      "type": "sync_http",
+      "critical": true
+    },
+    {
+      "source": "api-gateway",
+      "target": "payment-service",
+      "type": "sync_http",
+      "critical": true
+    },
+    {
+      "source": "order-service",
+      "target": "inventory-service",
+      "type": "sync_http",
+      "critical": true
+    },
+    {
+      "source": "order-service",
+      "target": "orders-db",
+      "type": "database",
+      "critical": true
+    },
+    {
+      "source": "order-service",
+      "target": "payment-service",
+      "type": "sync_http",
+      "critical": true
+    },
+    {
+      "source": "payment-service",
+      "target": "payment-db",
+      "type": "database",
+      "critical": true
+    },
+    {
+      "source": "payment-service",
+      "target": "external-payment-provider",
+      "type": "external_api",
+      "critical": false
+    }
+  ]
+}

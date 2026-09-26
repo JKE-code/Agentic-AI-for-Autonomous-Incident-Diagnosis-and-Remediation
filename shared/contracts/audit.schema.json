@@ -1,13 +1,33 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "AuditEvent",
+  "description": "Immutable audit trail event recording actions, reasoning decisions, and approvals",
   "type": "object",
-  "required": ["audit_id", "incident_id", "timestamp", "actor", "event", "details"],
+  "required": [
+    "audit_id",
+    "incident_id",
+    "timestamp",
+    "actor",
+    "event",
+    "details"
+  ],
   "properties": {
-    "audit_id": { "type": "string" },
-    "incident_id": { "type": "string" },
-    "timestamp": { "type": "string", "format": "date-time" },
-    "actor": { "type": "string", "enum": ["system", "ai", "human"] },
+    "audit_id": {
+      "type": "string",
+      "example": "AUD-001"
+    },
+    "incident_id": {
+      "type": "string",
+      "example": "INC-001"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "actor": {
+      "type": "string",
+      "enum": ["agent", "human", "system"]
+    },
     "event": {
       "type": "string",
       "enum": [
@@ -26,8 +46,14 @@
         "INCIDENT_RESOLVED"
       ]
     },
-    "action_id": { "type": ["string", "null"] },
-    "details": { "type": "string" },
-    "metadata": { "type": "object" }
+    "action_id": {
+      "type": "string"
+    },
+    "details": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    }
   }
 }

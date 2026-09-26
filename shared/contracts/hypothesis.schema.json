@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Hypothesis",
+  "description": "Root-cause hypothesis with associated evidence, score, confidence, and verification tests",
+  "type": "object",
+  "required": [
+    "hypothesis_id",
+    "cause",
+    "service",
+    "score",
+    "confidence",
+    "supporting_evidence",
+    "contradicting_evidence",
+    "tests",
+    "status"
+  ],
+  "properties": {
+    "hypothesis_id": {
+      "type": "string",
+      "example": "HYP-001"
+    },
+    "cause": {
+      "type": "string",
+      "example": "Bad deployment of payment-service"
+    },
+    "root_cause_category": {
+      "type": "string",
+      "enum": [
+        "BAD_DEPLOYMENT",
+        "DB_CONNECTION_EXHAUSTION",
+        "MEMORY_LEAK",
+        "DOWNSTREAM_FAILURE",
+        "CPU_SATURATION",
+        "NETWORK_LATENCY",
+        "UNKNOWN"
+      ]
+    },
+    "service": {
+      "type": "string",
+      "example": "payment-service"
+    },
+    "score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "supporting_evidence": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "contradicting_evidence": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "tests": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "status": {
+      "type": "string",
+      "enum": ["PROPOSED", "TESTING", "VERIFIED", "REJECTED"]
+    },
+    "verification_details": {
+      "type": "string"
+    }
+  }
+}
