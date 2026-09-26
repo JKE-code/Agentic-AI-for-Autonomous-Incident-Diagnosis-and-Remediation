@@ -27,8 +27,8 @@ export const HypothesisChart: React.FC<HypothesisChartProps> = ({
     const isVerified = h.status === 'VERIFIED';
     const isRuledOut = h.status === 'DISPROVEN' || h.status === 'RULED_OUT';
     
-    // Short label for the Y-Axis
-    const shortLabel = `#${idx + 1} ${h.service}: ${h.cause.length > 28 ? h.cause.slice(0, 25) + '...' : h.cause}`;
+    // Short label for the Y-Axis: clean and concise to prevent SVG text collision
+    const shortLabel = `#${idx + 1} ${h.service}`;
 
     return {
       id: h.hypothesis_id,
@@ -44,6 +44,8 @@ export const HypothesisChart: React.FC<HypothesisChartProps> = ({
       contradictingCount: h.contradicting_evidence?.length || 0,
     };
   });
+
+  const chartHeight = Math.max(200, hypotheses.length * 36);
 
   return (
     <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-4">
@@ -73,7 +75,7 @@ export const HypothesisChart: React.FC<HypothesisChartProps> = ({
       </div>
 
       {/* Visual Chart */}
-      <div className="h-44 w-full">
+      <div style={{ height: chartHeight }} className="w-full">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             layout="vertical"
@@ -97,8 +99,8 @@ export const HypothesisChart: React.FC<HypothesisChartProps> = ({
             <YAxis
               type="category"
               dataKey="name"
-              width={160}
-              tick={{ fontSize: 11, fill: '#1e293b', fontWeight: 500 }}
+              width={140}
+              tick={{ fontSize: 11, fill: '#334155', fontWeight: 600 }}
               axisLine={false}
               tickLine={false}
             />
@@ -143,7 +145,7 @@ export const HypothesisChart: React.FC<HypothesisChartProps> = ({
                 return null;
               }}
             />
-            <Bar dataKey="scorePct" name="Likelihood Score" radius={[0, 6, 6, 0]} cursor="pointer">
+            <Bar dataKey="scorePct" name="Likelihood Score" radius={[0, 6, 6, 0]} barSize={16} cursor="pointer">
               {data.map((entry) => (
                 <Cell
                   key={entry.id}

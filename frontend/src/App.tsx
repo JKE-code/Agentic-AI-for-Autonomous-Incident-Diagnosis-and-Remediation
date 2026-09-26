@@ -31,7 +31,7 @@ export const App: React.FC = () => {
   const [detailSubTab, setDetailSubTab] = useState<
     'all' | 'timeline' | 'hypotheses' | 'evidence' | 'remediation' | 'audit'
   >('all');
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
 
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [activeIncidentId, setActiveIncidentId] = useState<string>('INC-001');
@@ -132,14 +132,6 @@ export const App: React.FC = () => {
   ) => {
     sounds.playBlip();
     setDetailSubTab(step);
-    if (step !== 'all') {
-      setTimeout(() => {
-        const el = document.getElementById('diagnostic-panels-container');
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 50);
-    }
   };
 
   const handleDiagnose = async () => {

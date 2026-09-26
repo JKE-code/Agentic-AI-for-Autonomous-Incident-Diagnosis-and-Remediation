@@ -53,6 +53,15 @@
   background: #0284c7;
 }
 
+/* Hide scrollbars utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
 /* Subtle enterprise pulse */
 @keyframes soft-pulse {
   0%, 100% { opacity: 1; transform: scale(1); }

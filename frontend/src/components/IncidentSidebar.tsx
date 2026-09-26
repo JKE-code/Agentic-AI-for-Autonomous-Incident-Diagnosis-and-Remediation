@@ -91,7 +91,7 @@ export const IncidentSidebar: React.FC<IncidentSidebarProps> = ({
   };
 
   return (
-    <aside className="w-full md:w-80 lg:w-96 flex-shrink-0 bg-white border-r border-slate-200 flex flex-col h-[calc(100vh-65px)]">
+    <aside className="w-full md:w-72 lg:w-80 flex-shrink-0 bg-white border-r border-slate-200 flex flex-col h-full">
       {/* Header and Search */}
       <div className="p-3.5 border-b border-slate-200 space-y-3 bg-slate-50/50">
         <div className="flex items-center justify-between">
