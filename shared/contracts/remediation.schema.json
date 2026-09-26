@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Remediation",
+  "type": "object",
+  "required": ["action_id", "action", "service", "risk", "reversible", "expected_effect", "verification", "requires_approval"],
+  "properties": {
+    "action_id": {
+      "type": "string"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "restart_service",
+        "rollback_deployment",
+        "scale_service",
+        "clear_cache",
+        "disable_dependency"
+      ]
+    },
+    "service": {
+      "type": "string"
+    },
+    "current_version": {
+      "type": ["string", "null"]
+    },
+    "target_version": {
+      "type": ["string", "null"]
+    },
+    "replicas": {
+      "type": ["integer", "null"]
+    },
+    "risk": {
+      "type": "string",
+      "enum": ["LOW", "MEDIUM", "HIGH"]
+    },
+    "reversible": {
+      "type": "boolean"
+    },
+    "expected_effect": {
+      "type": "string"
+    },
+    "verification": {
+      "type": "object",
+      "properties": {
+        "metric": { "type": "string" },
+        "threshold": { "type": "string" }
+      },
+      "required": ["metric", "threshold"]
+    },
+    "requires_approval": {
+      "type": "boolean"
+    }
+  }
+}
