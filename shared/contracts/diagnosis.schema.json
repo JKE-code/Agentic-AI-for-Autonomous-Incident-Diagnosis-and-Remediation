@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Diagnosis",
+  "description": "Output diagnosis result returned by the LangGraph AI investigation pipeline",
+  "type": "object",
+  "required": [
+    "incident_id",
+    "status",
+    "timeline",
+    "hypotheses",
+    "root_cause",
+    "evidence",
+    "remediation",
+    "confidence",
+    "requires_more_data",
+    "audit_events"
+  ],
+  "properties": {
+    "incident_id": {
+      "type": "string",
+      "example": "INC-001"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "INVESTIGATING",
+        "REQUIRES_DATA",
+        "AWAITING_APPROVAL",
+        "DIAGNOSIS_COMPLETE",
+        "FAILED"
+      ]
+    },
+    "timeline": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["timestamp", "source", "service", "summary"],
+        "properties": {
+          "timestamp": { "type": "string" },
+          "source": { "type": "string" },
+          "service": { "type": "string" },
+          "summary": { "type": "string" },
+          "anomaly": { "type": "boolean" }
+        }
+      }
+    },
+    "hypotheses": {
+      "type": "array",
+      "items": { "$ref": "hypothesis.schema.json" }
+    },
+    "root_cause": {
+      "type": ["object", "null"]
+    },
+    "evidence": {
+      "type": "array",
+      "items": { "$ref": "evidence.schema.json" }
+    },
+    "remediation": {
+      "type": ["object", "null"]
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "requires_more_data": {
+      "type": "boolean"
+    },
+    "missing_signals": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "audit_events": {
+      "type": "array",
+      "items": { "$ref": "audit.schema.json" }
+    }
+  }
+}

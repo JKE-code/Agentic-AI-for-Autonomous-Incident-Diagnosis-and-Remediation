@@ -1,0 +1,14 @@
+{
+  "scenario_id": "INC-003",
+  "root_cause": "MEMORY_LEAK",
+  "affected_service": "payment-service",
+  "expected_remediation": "restart_service",
+  "remediation_parameters": {
+    "service": "payment-service"
+  },
+  "key_evidence_signatures": [
+    "monotonic_memory_rss_growth",
+    "java_OutOfMemoryError",
+    "cgroup_OOMKilled"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "scenario_id": "INC-002",
+  "root_cause": "DB_CONNECTION_EXHAUSTION",
+  "affected_service": "orders-db",
+  "expected_remediation": "restart_service",
+  "remediation_parameters": {
+    "service": "orders-db"
+  },
+  "key_evidence_signatures": [
+    "max_connections_reached_500",
+    "HikariPool_timeout_30s",
+    "db_connections_100pct"
+  ]
+}

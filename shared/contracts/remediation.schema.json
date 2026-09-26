@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Remediation",
+  "description": "Safe, whitelisted remediation action plan with risk classification and verification criteria",
+  "type": "object",
+  "required": [
+    "action_id",
+    "action",
+    "service",
+    "risk",
+    "reversible",
+    "expected_effect",
+    "verification",
+    "requires_approval"
+  ],
+  "properties": {
+    "action_id": {
+      "type": "string",
+      "example": "ACT-001"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "restart_service",
+        "rollback_deployment",
+        "scale_service",
+        "clear_cache",
+        "disable_dependency"
+      ]
+    },
+    "service": {
+      "type": "string",
+      "example": "payment-service"
+    },
+    "current_version": {
+      "type": "string",
+      "example": "v1.5"
+    },
+    "target_version": {
+      "type": "string",
+      "example": "v1.4"
+    },
+    "parameters": {
+      "type": "object"
+    },
+    "risk": {
+      "type": "string",
+      "enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]
+    },
+    "reversible": {
+      "type": "boolean"
+    },
+    "expected_effect": {
+      "type": "string",
+      "example": "Restore previous healthy deployment and reduce error rate"
+    },
+    "verification": {
+      "type": "object",
+      "required": ["metric", "threshold"],
+      "properties": {
+        "metric": { "type": "string" },
+        "threshold": { "type": "string" }
+      }
+    },
+    "requires_approval": {
+      "type": "boolean"
+    }
+  }
+}

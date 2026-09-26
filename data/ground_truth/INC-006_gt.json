@@ -1,0 +1,14 @@
+{
+  "scenario_id": "INC-006",
+  "root_cause": "NETWORK_LATENCY",
+  "affected_service": "order-service",
+  "expected_remediation": "restart_service",
+  "remediation_parameters": {
+    "service": "order-service"
+  },
+  "key_evidence_signatures": [
+    "network_rtt_850ms",
+    "transit_time_delta_853ms",
+    "internal_service_execution_fast_12ms"
+  ]
+}
