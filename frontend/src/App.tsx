@@ -13,7 +13,6 @@ import { ServiceTopology } from './components/ServiceTopology';
 import { EvaluationDashboard } from './components/EvaluationDashboard';
 import { ScenarioBar } from './components/ScenarioBar';
 import {
-  Activity,
   Clock,
   BrainCircuit,
   BarChart2,
@@ -29,8 +28,8 @@ import { sounds } from './utils/audio';
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'command-center' | 'topology' | 'evaluation'>('command-center');
   const [detailSubTab, setDetailSubTab] = useState<
-    'all' | 'timeline' | 'hypotheses' | 'evidence' | 'remediation' | 'audit'
-  >('all');
+    'timeline' | 'hypotheses' | 'evidence' | 'remediation' | 'audit'
+  >('timeline');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const [incidents, setIncidents] = useState<Incident[]>([]);
@@ -44,7 +43,7 @@ export const App: React.FC = () => {
   // Live Agent Terminal Drawer State
   const [terminalOpen, setTerminalOpen] = useState(false);
   const [agentLogs, setAgentLogs] = useState<string[]>([
-    '[SYSTEM] AegisSRE telemetry collector initialized.',
+    '[SYSTEM] Remidi telemetry collector initialized.',
     '[SYSTEM] Connected to FastAPI backend at http://localhost:8000.',
     '[ORCHESTRATOR] Ready for multi-agent investigation dispatch.',
   ]);
@@ -174,7 +173,7 @@ export const App: React.FC = () => {
   const handleTriggerDemoFlow = async () => {
     setActiveIncidentId('INC-001');
     setActiveTab('command-center');
-    setDetailSubTab('all');
+    setDetailSubTab('timeline');
 
     addAgentLog(`[DEMO] Triggering end-to-end incident walkthrough for INC-001...`);
     await handleDiagnose();
@@ -208,21 +207,8 @@ export const App: React.FC = () => {
           incidents={incidents}
           activeIncidentId={activeIncidentId}
           onSelectIncident={handleSelectIncident}
-          activeStep={
-            detailSubTab === 'timeline'
-              ? 'telemetry'
-              : detailSubTab === 'hypotheses' || detailSubTab === 'evidence'
-              ? 'hypotheses'
-              : detailSubTab === 'remediation'
-              ? 'remediation'
-              : 'all'
-          }
-          onSelectStep={(step) => {
-            if (step === 'telemetry') setDetailSubTab('timeline');
-            else if (step === 'hypotheses') setDetailSubTab('hypotheses');
-            else if (step === 'remediation') setDetailSubTab('remediation');
-            else setDetailSubTab('all');
-          }}
+          activeStep={detailSubTab}
+          onSelectStep={(step) => setDetailSubTab(step)}
         />
       )}
 
@@ -273,22 +259,8 @@ export const App: React.FC = () => {
                     onDiagnose={handleDiagnose}
                   />
 
-                  {/* Sub-tab navigation for focused inspection */}
-                  <div className="flex items-center gap-1.5 border-b border-slate-200 pb-2 text-xs font-medium overflow-x-auto">
-                    <button
-                      onClick={() => {
-                        sounds.playBlip();
-                        setDetailSubTab('all');
-                      }}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                        detailSubTab === 'all'
-                          ? 'bg-sky-600 text-white font-bold shadow-sky-glow'
-                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                      }`}
-                    >
-                      <Activity className="w-3.5 h-3.5" />
-                      All Panels
-                    </button>
+                  {/* Sub-tab navigation for focused inspection (No All Panels to keep page clean & compact) */}
+                  <div className="flex items-center gap-1.5 border-b border-slate-200 pb-2 text-xs font-semibold overflow-x-auto">
                     <button
                       onClick={() => {
                         sounds.playBlip();
@@ -338,7 +310,7 @@ export const App: React.FC = () => {
                       }}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                         detailSubTab === 'remediation'
-                          ? 'bg-sky-600 text-white font-bold shadow-sky-glow'
+                          ? 'bg-emerald-600 text-white font-bold shadow-emerald-glow'
                           : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       }`}
                     >
@@ -361,28 +333,28 @@ export const App: React.FC = () => {
                     </button>
                   </div>
 
-                  {/* Sub-tab view rendering */}
+                  {/* Focused Single-Panel Rendering - eliminates huge vertical scrolling */}
                   {diagnosis && (
-                    <div className="space-y-6">
-                      {(detailSubTab === 'all' || detailSubTab === 'timeline') && (
+                    <div className="space-y-4">
+                      {detailSubTab === 'timeline' && (
                         <IncidentTimeline timeline={diagnosis.timeline} />
                       )}
 
-                      {(detailSubTab === 'all' || detailSubTab === 'hypotheses') && (
+                      {detailSubTab === 'hypotheses' && (
                         <HypothesisPanel
                           hypotheses={diagnosis.hypotheses}
                           onSelectEvidence={handleSelectEvidenceFromHypothesis}
                         />
                       )}
 
-                      {(detailSubTab === 'all' || detailSubTab === 'evidence') && (
+                      {detailSubTab === 'evidence' && (
                         <EvidencePanel
                           evidence={diagnosis.evidence}
                           highlightedEvidenceId={highlightedEvidenceId}
                         />
                       )}
 
-                      {(detailSubTab === 'all' || detailSubTab === 'remediation') &&
+                      {detailSubTab === 'remediation' &&
                         diagnosis.remediation && (
                           <RemediationPanel
                             remediation={diagnosis.remediation}
@@ -393,7 +365,7 @@ export const App: React.FC = () => {
                           />
                         )}
 
-                      {(detailSubTab === 'all' || detailSubTab === 'audit') && (
+                      {detailSubTab === 'audit' && (
                         <AuditTrail auditEvents={diagnosis.audit_events} />
                       )}
                     </div>
