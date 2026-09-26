@@ -16,7 +16,7 @@ interface AuditTrailProps {
 }
 
 export const AuditTrail: React.FC<AuditTrailProps> = ({ auditEvents }) => {
-  const getActorBadge = (actor: AuditActor) => {
+  const getActorBadge = (actor: AuditActor | string) => {
     switch (actor) {
       case 'human':
         return (
@@ -26,6 +26,7 @@ export const AuditTrail: React.FC<AuditTrailProps> = ({ auditEvents }) => {
           </span>
         );
       case 'agent':
+      case 'ai':
         return (
           <span className="flex items-center gap-1 text-[10px] font-bold font-mono px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">
             <Bot className="w-2.5 h-2.5" />
@@ -33,6 +34,7 @@ export const AuditTrail: React.FC<AuditTrailProps> = ({ auditEvents }) => {
           </span>
         );
       case 'system':
+      default:
         return (
           <span className="flex items-center gap-1 text-[10px] font-bold font-mono px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40">
             <Terminal className="w-2.5 h-2.5" />
@@ -42,7 +44,7 @@ export const AuditTrail: React.FC<AuditTrailProps> = ({ auditEvents }) => {
     }
   };
 
-  const getEventIcon = (event: AuditEventType) => {
+  const getEventIcon = (event: AuditEventType | string) => {
     switch (event) {
       case 'INCIDENT_CREATED':
         return <ShieldAlert className="w-3.5 h-3.5 text-rose-400" />;

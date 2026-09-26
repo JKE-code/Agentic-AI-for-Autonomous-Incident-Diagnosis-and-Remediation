@@ -10,6 +10,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
+import { sounds } from '../utils/audio';
 
 interface HypothesisPanelProps {
   hypotheses: Hypothesis[];
@@ -25,37 +26,38 @@ export const HypothesisPanel: React.FC<HypothesisPanelProps> = ({
   );
 
   const toggleExpand = (id: string) => {
+    sounds.playBlip();
     setExpandedId((prev) => (prev === id ? '' : id));
   };
 
   const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'VERIFIED':
-        return (
-          <span className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
-            <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-            VERIFIED ROOT CAUSE
-          </span>
-        );
-      case 'DISPROVEN':
-        return (
-          <span className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
-            <XCircle className="w-3 h-3 text-slate-500" />
-            DISPROVEN
-          </span>
-        );
-      default:
-        return (
-          <span className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
-            <Clock className="w-3 h-3 text-amber-400" />
-            INVESTIGATING
-          </span>
-        );
+    const s = (status || '').toUpperCase();
+    if (s === 'VERIFIED') {
+      return (
+        <span className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+          <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+          VERIFIED ROOT CAUSE
+        </span>
+      );
+    } else if (s === 'DISPROVEN' || s === 'RULED_OUT') {
+      return (
+        <span className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">
+          <XCircle className="w-3 h-3 text-slate-500" />
+          RULED OUT
+        </span>
+      );
+    } else {
+      return (
+        <span className="flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">
+          <Clock className="w-3 h-3 text-amber-400" />
+          INVESTIGATING
+        </span>
+      );
     }
   };
 
   return (
-    <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-lg backdrop-blur-sm">
+    <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-lg backdrop-blur-sm animate-fade-in">
       <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
         <div className="flex items-center gap-2">
           <BrainCircuit className="w-4 h-4 text-purple-400" />
@@ -76,7 +78,7 @@ export const HypothesisPanel: React.FC<HypothesisPanelProps> = ({
           return (
             <div
               key={hyp.hypothesis_id}
-              className={`rounded-xl border transition-all ${
+              className={`rounded-xl border transition-all duration-200 ${
                 isTopRanked
                   ? 'bg-purple-950/20 border-purple-500/40 shadow-sm shadow-purple-950/40'
                   : 'bg-slate-950/60 border-slate-800/80 hover:border-slate-700'
@@ -85,7 +87,7 @@ export const HypothesisPanel: React.FC<HypothesisPanelProps> = ({
               {/* Header / Summary row */}
               <div
                 onClick={() => toggleExpand(hyp.hypothesis_id)}
-                className="p-4 cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-3"
+                className="p-4 cursor-pointer flex flex-col md:flex-row md:items-center justify-between gap-3 select-none"
               >
                 <div className="space-y-1.5 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -130,7 +132,7 @@ export const HypothesisPanel: React.FC<HypothesisPanelProps> = ({
                     </div>
                   </div>
 
-                  <div className="p-1 text-slate-500 hover:text-slate-300">
+                  <div className="p-1 text-slate-500 hover:text-slate-300 transition-colors">
                     {isExpanded ? (
                       <ChevronUp className="w-4 h-4" />
                     ) : (
@@ -144,44 +146,48 @@ export const HypothesisPanel: React.FC<HypothesisPanelProps> = ({
               <div className="px-4 pb-2">
                 <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden flex">
                   <div
-                    className="bg-purple-500 h-full"
+                    className="bg-purple-500 h-full transition-all duration-500"
                     style={{ width: `${hyp.score * 100}%` }}
                   />
                   <div
-                    className="bg-emerald-500 h-full opacity-70"
-                    style={{ width: `${(hyp.confidence - hyp.score) * 100}%` }}
+                    className="bg-emerald-500 h-full opacity-70 transition-all duration-500"
+                    style={{ width: `${Math.max(0, (hyp.confidence - hyp.score) * 100)}%` }}
                   />
                 </div>
               </div>
 
               {/* Expanded details */}
               {isExpanded && (
-                <div className="p-4 pt-2 border-t border-slate-800/80 bg-slate-950/40 space-y-3">
+                <div className="p-4 pt-2 border-t border-slate-800/80 bg-slate-950/40 space-y-3 animate-fade-in">
                   {/* Evidence Association */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                     <div className="p-3 rounded-lg bg-emerald-950/20 border border-emerald-500/20">
                       <div className="font-semibold text-emerald-300 text-[11px] mb-1.5 flex items-center gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Supporting Evidence ({hyp.supporting_evidence.length})
+                        <CheckCircle2 className="w-3.5 h-3.5" /> Supporting Evidence ({hyp.supporting_evidence?.length || 0})
                       </div>
                       <div className="flex flex-wrap gap-1.5">
-                        {hyp.supporting_evidence.map((evId) => (
-                          <button
-                            key={evId}
-                            onClick={() => onSelectEvidence && onSelectEvidence(evId)}
-                            className="font-mono text-[10px] px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-900/60 transition-colors"
-                          >
-                            {evId}
-                          </button>
-                        ))}
+                        {(!hyp.supporting_evidence || hyp.supporting_evidence.length === 0) ? (
+                          <span className="text-[11px] text-slate-500">None observed</span>
+                        ) : (
+                          hyp.supporting_evidence.map((evId) => (
+                            <button
+                              key={evId}
+                              onClick={() => onSelectEvidence && onSelectEvidence(evId)}
+                              className="font-mono text-[10px] px-2 py-0.5 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-900/60 transition-colors"
+                            >
+                              {evId}
+                            </button>
+                          ))
+                        )}
                       </div>
                     </div>
 
                     <div className="p-3 rounded-lg bg-rose-950/20 border border-rose-500/20">
                       <div className="font-semibold text-rose-300 text-[11px] mb-1.5 flex items-center gap-1.5">
-                        <XCircle className="w-3.5 h-3.5" /> Contradicting Evidence ({hyp.contradicting_evidence.length})
+                        <XCircle className="w-3.5 h-3.5" /> Contradicting Evidence ({hyp.contradicting_evidence?.length || 0})
                       </div>
                       <div className="flex flex-wrap gap-1.5">
-                        {hyp.contradicting_evidence.length === 0 ? (
+                        {(!hyp.contradicting_evidence || hyp.contradicting_evidence.length === 0) ? (
                           <span className="text-[11px] text-slate-500">None observed</span>
                         ) : (
                           hyp.contradicting_evidence.map((evId) => (
@@ -199,21 +205,23 @@ export const HypothesisPanel: React.FC<HypothesisPanelProps> = ({
                   </div>
 
                   {/* Verification Tests */}
-                  <div className="p-3 rounded-lg bg-slate-900/80 border border-slate-800">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-2">
-                      Formal Verification Tests Executed
-                    </span>
-                    <ul className="space-y-1.5 text-xs text-slate-300">
-                      {hyp.tests.map((test, tIdx) => (
-                        <li key={tIdx} className="flex items-start gap-2">
-                          <span className="text-purple-400 font-mono text-[11px] mt-0.5">
-                            [{tIdx + 1}]
-                          </span>
-                          <span>{test}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  {hyp.tests && hyp.tests.length > 0 && (
+                    <div className="p-3 rounded-lg bg-slate-900/80 border border-slate-800">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-2">
+                        Formal Verification Tests Executed
+                      </span>
+                      <ul className="space-y-1.5 text-xs text-slate-300">
+                        {hyp.tests.map((test, tIdx) => (
+                          <li key={tIdx} className="flex items-start gap-2">
+                            <span className="text-purple-400 font-mono text-[11px] mt-0.5">
+                              [{tIdx + 1}]
+                            </span>
+                            <span>{test}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

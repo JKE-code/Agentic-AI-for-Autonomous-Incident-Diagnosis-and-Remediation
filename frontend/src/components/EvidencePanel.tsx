@@ -36,7 +36,7 @@ export const EvidencePanel: React.FC<EvidencePanelProps> = ({
     return matchesSource && matchesQuery;
   });
 
-  const getSourceIcon = (source: EvidenceSource) => {
+  const getSourceIcon = (source: EvidenceSource | string) => {
     switch (source) {
       case 'logs':
         return <FileText className="w-3.5 h-3.5 text-amber-400" />;
@@ -48,10 +48,12 @@ export const EvidencePanel: React.FC<EvidencePanelProps> = ({
         return <GitBranch className="w-3.5 h-3.5 text-purple-400" />;
       case 'dependencies':
         return <Network className="w-3.5 h-3.5 text-emerald-400" />;
+      default:
+        return <FileText className="w-3.5 h-3.5 text-slate-400" />;
     }
   };
 
-  const getSourceBadgeColor = (source: EvidenceSource) => {
+  const getSourceBadgeColor = (source: EvidenceSource | string) => {
     switch (source) {
       case 'logs':
         return 'bg-amber-950/40 text-amber-300 border-amber-500/30';
@@ -63,6 +65,8 @@ export const EvidencePanel: React.FC<EvidencePanelProps> = ({
         return 'bg-purple-950/40 text-purple-300 border-purple-500/30';
       case 'dependencies':
         return 'bg-emerald-950/40 text-emerald-300 border-emerald-500/30';
+      default:
+        return 'bg-slate-900 text-slate-300 border-slate-700';
     }
   };
 
