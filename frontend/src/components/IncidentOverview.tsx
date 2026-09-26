@@ -40,18 +40,20 @@ export const IncidentOverview: React.FC<IncidentOverviewProps> = ({
 
   return (
     <div className="space-y-4">
-      {/* Overview Card */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs relative overflow-hidden animate-fade-in">
+      {/* Overview Card with subtle gradient aura */}
+      <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs relative overflow-hidden animate-slide-up">
+        <div className="absolute top-0 right-0 w-96 h-48 bg-gradient-to-bl from-sky-100/50 via-emerald-50/20 to-transparent pointer-events-none rounded-tr-2xl" />
+        
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5 relative z-10">
           {/* Title and Identification */}
           <div className="space-y-2.5 max-w-3xl flex-1">
             <div className="flex flex-wrap items-center gap-2.5">
-              <span className="font-mono text-xs font-bold text-sky-800 bg-sky-50 border border-sky-200 px-2.5 py-0.5 rounded-lg">
+              <span className="font-mono text-xs font-bold text-sky-800 bg-sky-50 border border-sky-200 px-2.5 py-0.5 rounded-lg shadow-2xs">
                 #{incident.incident_id}
               </span>
 
               <span
-                className={`flex items-center gap-1 text-xs font-semibold px-2.5 py-0.5 rounded-full border ${
+                className={`flex items-center gap-1 text-xs font-semibold px-2.5 py-0.5 rounded-full border shadow-2xs ${
                   incident.severity === 'CRITICAL'
                     ? 'bg-rose-50 text-rose-700 border-rose-200'
                     : incident.severity === 'HIGH'
@@ -64,7 +66,7 @@ export const IncidentOverview: React.FC<IncidentOverviewProps> = ({
               </span>
 
               <span
-                className={`flex items-center gap-1.5 text-xs font-medium px-2.5 py-0.5 rounded-full border ${
+                className={`flex items-center gap-1.5 text-xs font-medium px-2.5 py-0.5 rounded-full border shadow-2xs ${
                   isResolved
                     ? 'bg-emerald-50 text-emerald-700 border-emerald-200 font-semibold'
                     : incident.status === 'DIAGNOSING' || isDiagnosing
@@ -110,7 +112,7 @@ export const IncidentOverview: React.FC<IncidentOverviewProps> = ({
                   {incident.services.map((svc) => (
                     <span
                       key={svc}
-                      className="text-xs font-mono px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 font-medium"
+                      className="text-xs font-mono px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 border border-slate-200 font-medium hover:bg-slate-200 transition-colors"
                     >
                       {svc}
                     </span>
@@ -124,14 +126,14 @@ export const IncidentOverview: React.FC<IncidentOverviewProps> = ({
                   sounds.playBlip();
                   setShowTelemetryChart(!showTelemetryChart);
                 }}
-                className="flex items-center gap-1.5 text-xs font-mono font-medium px-3 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 transition-all cursor-pointer"
+                className="flex items-center gap-1.5 text-xs font-mono font-medium px-3 py-1 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 transition-all cursor-pointer btn-tactile"
               >
                 <Activity className="w-3.5 h-3.5 text-sky-600" />
                 <span>{showTelemetryChart ? 'Hide Visual Chart' : 'Show Visual Telemetry Chart'}</span>
                 {showTelemetryChart ? (
-                  <ChevronUp className="w-3.5 h-3.5 text-sky-600" />
+                  <ChevronUp className="w-3.5 h-3.5 text-sky-600 transition-transform" />
                 ) : (
-                  <ChevronDown className="w-3.5 h-3.5 text-sky-600" />
+                  <ChevronDown className="w-3.5 h-3.5 text-sky-600 transition-transform" />
                 )}
               </button>
             </div>
@@ -142,10 +144,10 @@ export const IncidentOverview: React.FC<IncidentOverviewProps> = ({
             <button
               onClick={handleDiagnoseClick}
               disabled={isDiagnosing}
-              className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all shadow-xs cursor-pointer ${
+              className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all duration-200 cursor-pointer btn-enterprise ${
                 isDiagnosing
-                  ? 'bg-sky-400 text-white cursor-wait'
-                  : 'bg-sky-600 hover:bg-sky-700 text-white shadow-sky-600/15 active:scale-98'
+                  ? 'bg-sky-500 text-white cursor-wait animate-pulse'
+                  : 'bg-sky-600 hover:bg-sky-700 text-white shadow-sky-glow'
               }`}
             >
               {isDiagnosing ? (
@@ -164,14 +166,14 @@ export const IncidentOverview: React.FC<IncidentOverviewProps> = ({
 
             {/* Root cause quick status preview */}
             {diagnosis?.root_cause && (
-              <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs flex items-center justify-between gap-3 shadow-2xs">
+              <div className="p-2.5 rounded-xl bg-slate-50 border border-emerald-200/80 text-xs flex items-center justify-between gap-3 shadow-2xs hover:bg-emerald-50/20 transition-colors">
                 <div className="flex items-center gap-2">
                   <Cpu className="w-4 h-4 text-emerald-600" />
                   <span className="text-slate-700 font-medium truncate max-w-[210px]">
                     Cause: {diagnosis.root_cause.service || diagnosis.root_cause.cause}
                   </span>
                 </div>
-                <span className="font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                <span className="font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 shadow-2xs">
                   {(diagnosis.confidence * 100).toFixed(0)}% conf
                 </span>
               </div>
@@ -182,7 +184,9 @@ export const IncidentOverview: React.FC<IncidentOverviewProps> = ({
 
       {/* Embedded Real-Time Telemetry Chart */}
       {showTelemetryChart && (
-        <TelemetryChart incident={incident} isResolved={isResolved} />
+        <div className="animate-slide-up">
+          <TelemetryChart incident={incident} isResolved={isResolved} />
+        </div>
       )}
     </div>
   );

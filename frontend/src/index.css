@@ -63,11 +63,11 @@
   animation: soft-pulse 2.5s ease-in-out infinite;
 }
 
-/* Clean fade-in */
-@keyframes fadeIn {
+/* Fluid entrance animations */
+@keyframes slideUpFade {
   from {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -75,15 +75,77 @@
   }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
-/* Enterprise clean card shadow */
+@keyframes pulseRadar {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(2, 132, 199, 0.5);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 8px rgba(2, 132, 199, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(2, 132, 199, 0);
+  }
+}
+
+@keyframes shimmerWave {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-slide-up {
+  animation: slideUpFade 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-right {
+  animation: slideInRight 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-radar {
+  animation: pulseRadar 2.2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(224,242,254,0.6) 50%, rgba(255,255,255,0) 100%);
+  background-size: 200% 100%;
+  animation: shimmerWave 2s infinite ease-in-out;
+}
+
+.animate-fade-in {
+  animation: slideUpFade 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Staggered entrance helpers for lists */
+.stagger-item {
+  animation: slideUpFade 0.26s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+/* Enterprise glass & clean card styles */
+.glass-panel {
+  background-color: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+}
+
 .card-clean {
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.03), 0 1px 2px -1px rgba(15, 23, 42, 0.03);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .card-clean:hover {
@@ -91,19 +153,43 @@
   box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.06), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
 }
 
+/* Interactive card hover lift with Sky Blue aura */
+.card-interactive {
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.card-interactive:hover {
+  transform: translateY(-2px);
+  border-color: #7dd3fc;
+  box-shadow: 0 8px 20px -4px rgba(2, 132, 199, 0.12), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+}
+
 /* Sky Blue Glow */
 .shadow-sky-glow {
-  box-shadow: 0 3px 12px -1px rgba(2, 132, 199, 0.25);
+  box-shadow: 0 4px 14px -1px rgba(2, 132, 199, 0.25);
 }
 
 .shadow-emerald-glow {
-  box-shadow: 0 3px 12px -1px rgba(22, 163, 74, 0.25);
+  box-shadow: 0 4px 14px -1px rgba(22, 163, 74, 0.25);
 }
 
-/* Sophisticated enterprise button styling */
+/* Tactile enterprise buttons */
 .btn-enterprise {
-  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-enterprise:hover {
+  transform: translateY(-1px);
 }
 .btn-enterprise:active {
-  transform: scale(0.98);
+  transform: scale(0.97) translateY(0);
+}
+
+.btn-tactile {
+  transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.btn-tactile:hover {
+  transform: translateY(-1px);
+}
+.btn-tactile:active {
+  transform: scale(0.97);
 }

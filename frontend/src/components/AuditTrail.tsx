@@ -69,7 +69,7 @@ export const AuditTrail: React.FC<AuditTrailProps> = ({ auditEvents }) => {
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-4 animate-fade-in">
+    <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs space-y-4 animate-slide-up">
       {/* Header */}
       <div className="flex items-center justify-between pb-3 border-b border-slate-200">
         <div className="flex items-center gap-2">
@@ -86,17 +86,21 @@ export const AuditTrail: React.FC<AuditTrailProps> = ({ auditEvents }) => {
       {/* Events timeline */}
       <div className="relative pl-6 space-y-3 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
         {auditEvents.map((item, idx) => (
-          <div key={item.audit_id || idx} className="relative group">
+          <div
+            key={item.audit_id || idx}
+            className="relative group stagger-item"
+            style={{ animationDelay: `${Math.min(idx * 30, 300)}ms` }}
+          >
             {/* Dot */}
-            <div className="absolute -left-6 top-2 flex items-center justify-center w-5 h-5 rounded-full bg-white border border-slate-300 shadow-2xs z-10">
-              <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
+            <div className="absolute -left-6 top-2 flex items-center justify-center w-5 h-5 rounded-full bg-white border border-slate-300 shadow-2xs z-10 group-hover:scale-110 group-hover:border-sky-500 transition-transform">
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-400 group-hover:bg-sky-600 transition-colors" />
             </div>
 
             {/* Entry Box */}
-            <div className="p-3 rounded-xl bg-slate-50/80 border border-slate-200 hover:border-slate-300 transition-colors">
+            <div className="p-3 rounded-xl bg-slate-50/80 border border-slate-200 hover:border-slate-300 hover:bg-white hover:translate-x-0.5 transition-all duration-150 shadow-2xs">
               <div className="flex flex-wrap items-center justify-between gap-2 mb-1.5">
                 <div className="flex items-center gap-2">
-                  <span className="p-1 rounded-md bg-white border border-slate-200">
+                  <span className="p-1 rounded-md bg-white border border-slate-200 shadow-2xs">
                     {getEventIcon(item.event)}
                   </span>
                   <span className="font-mono text-xs font-bold text-sky-900">
@@ -106,7 +110,7 @@ export const AuditTrail: React.FC<AuditTrailProps> = ({ auditEvents }) => {
                 </div>
 
                 <div className="flex items-center gap-2 text-[11px] font-mono text-slate-500">
-                  <span>#{item.audit_id}</span>
+                  <span className="bg-white px-1.5 py-0.2 rounded border border-slate-200">#{item.audit_id}</span>
                   <span>•</span>
                   <span>
                     {new Date(item.timestamp).toLocaleTimeString([], {

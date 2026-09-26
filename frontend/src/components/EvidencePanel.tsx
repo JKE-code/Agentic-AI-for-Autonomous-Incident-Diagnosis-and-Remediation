@@ -127,27 +127,28 @@ export const EvidencePanel: React.FC<EvidencePanelProps> = ({
 
         {/* Evidence Items List */}
         <div className="space-y-3">
-          {filteredEvidence.map((ev) => {
+          {filteredEvidence.map((ev, idx) => {
             const isHighlighted = highlightedEvidenceId === ev.evidence_id;
             const isRawOpen = expandedRawId === ev.evidence_id;
 
             return (
               <div
                 key={ev.evidence_id}
-                className={`p-4 rounded-xl border transition-all ${
+                className={`p-4 rounded-xl border transition-all duration-200 stagger-item ${
                   isHighlighted
-                    ? 'bg-sky-50/50 border-sky-400 ring-2 ring-sky-300/40 shadow-xs'
-                    : 'bg-white border-slate-200 hover:border-slate-300'
+                    ? 'bg-sky-50/60 border-sky-400 ring-2 ring-sky-300 shadow-sky-glow scale-[1.01]'
+                    : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-xs'
                 }`}
+                style={{ animationDelay: `${Math.min(idx * 40, 300)}ms` }}
               >
                 <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                    <span className="font-mono text-xs font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 shadow-2xs">
                       {ev.evidence_id}
                     </span>
 
                     <span
-                      className={`flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded border font-medium ${getSourceBadgeColor(
+                      className={`flex items-center gap-1 text-[11px] font-mono px-2 py-0.5 rounded border font-medium shadow-2xs ${getSourceBadgeColor(
                         ev.source
                       )}`}
                     >
@@ -158,6 +159,12 @@ export const EvidencePanel: React.FC<EvidencePanelProps> = ({
                     <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-50 text-slate-700 border border-slate-200">
                       svc: {ev.service}
                     </span>
+
+                    {isHighlighted && (
+                      <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-600 text-white shadow-sky-glow animate-pulse">
+                        Correlated to Hypothesis
+                      </span>
+                    )}
                   </div>
 
                   <div className="flex items-center gap-3 text-xs font-mono">
@@ -224,17 +231,17 @@ export const EvidencePanel: React.FC<EvidencePanelProps> = ({
                       onClick={() =>
                         setExpandedRawId(isRawOpen ? '' : ev.evidence_id)
                       }
-                      className="flex items-center gap-1 text-[11px] text-sky-700 hover:text-sky-900 font-mono transition-colors cursor-pointer"
+                      className="flex items-center gap-1 text-[11px] text-sky-700 hover:text-sky-900 font-mono transition-colors cursor-pointer btn-tactile"
                     >
                       {isRawOpen ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-                      {isRawOpen ? 'Hide Raw Telemetry' : 'Inspect Raw Telemetry'}
+                      <span>{isRawOpen ? 'Hide Raw Telemetry' : 'Inspect Raw Telemetry'}</span>
                     </button>
                   )}
                 </div>
 
                 {/* Raw Data JSON Viewer */}
                 {isRawOpen && ev.raw_data && (
-                  <div className="mt-3 p-3 bg-slate-900 rounded-lg border border-slate-800 text-[11px] font-mono text-emerald-400 overflow-x-auto shadow-inner">
+                  <div className="mt-3 p-3 bg-slate-900 rounded-lg border border-slate-800 text-[11px] font-mono text-emerald-400 overflow-x-auto shadow-inner animate-slide-up scrollbar-thin">
                     <pre>{JSON.stringify(ev.raw_data, null, 2)}</pre>
                   </div>
                 )}

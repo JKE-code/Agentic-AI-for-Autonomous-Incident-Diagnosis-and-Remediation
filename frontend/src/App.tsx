@@ -259,83 +259,103 @@ export const App: React.FC = () => {
                     onDiagnose={handleDiagnose}
                   />
 
-                  {/* Sub-tab navigation for focused inspection (No All Panels to keep page clean & compact) */}
-                  <div className="flex items-center gap-1.5 border-b border-slate-200 pb-2 text-xs font-semibold overflow-x-auto">
+                  {/* Sub-tab navigation for focused inspection */}
+                  <div className="flex items-center gap-1.5 border-b border-slate-200/90 pb-2 text-xs font-semibold overflow-x-auto scrollbar-thin">
                     <button
                       onClick={() => {
                         sounds.playBlip();
                         setDetailSubTab('timeline');
                       }}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer btn-tactile ${
                         detailSubTab === 'timeline'
                           ? 'bg-sky-600 text-white font-bold shadow-sky-glow'
                           : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       }`}
                     >
                       <Clock className="w-3.5 h-3.5" />
-                      Timeline ({diagnosis?.timeline?.length || 0})
+                      <span>Timeline</span>
+                      <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+                        detailSubTab === 'timeline' ? 'bg-sky-700/80 text-white' : 'bg-slate-200/70 text-slate-700'
+                      }`}>
+                        {diagnosis?.timeline?.length || 0}
+                      </span>
                     </button>
                     <button
                       onClick={() => {
                         sounds.playBlip();
                         setDetailSubTab('hypotheses');
                       }}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer btn-tactile ${
                         detailSubTab === 'hypotheses'
                           ? 'bg-sky-600 text-white font-bold shadow-sky-glow'
                           : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       }`}
                     >
                       <BrainCircuit className="w-3.5 h-3.5" />
-                      Hypotheses ({diagnosis?.hypotheses?.length || 0})
+                      <span>Hypotheses</span>
+                      <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+                        detailSubTab === 'hypotheses' ? 'bg-sky-700/80 text-white' : 'bg-slate-200/70 text-slate-700'
+                      }`}>
+                        {diagnosis?.hypotheses?.length || 0}
+                      </span>
                     </button>
                     <button
                       onClick={() => {
                         sounds.playBlip();
                         setDetailSubTab('evidence');
                       }}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer btn-tactile ${
                         detailSubTab === 'evidence'
                           ? 'bg-sky-600 text-white font-bold shadow-sky-glow'
                           : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       }`}
                     >
                       <BarChart2 className="w-3.5 h-3.5" />
-                      Evidence ({diagnosis?.evidence?.length || 0})
+                      <span>Evidence</span>
+                      <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+                        detailSubTab === 'evidence' ? 'bg-sky-700/80 text-white' : 'bg-slate-200/70 text-slate-700'
+                      }`}>
+                        {diagnosis?.evidence?.length || 0}
+                      </span>
                     </button>
                     <button
                       onClick={() => {
                         sounds.playBlip();
                         setDetailSubTab('remediation');
                       }}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer btn-tactile ${
                         detailSubTab === 'remediation'
                           ? 'bg-emerald-600 text-white font-bold shadow-emerald-glow'
                           : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       }`}
                     >
                       <ShieldCheck className="w-3.5 h-3.5" />
-                      Remediation & Approval
+                      <span>Remediation & Approval</span>
                     </button>
                     <button
                       onClick={() => {
                         sounds.playBlip();
                         setDetailSubTab('audit');
                       }}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer btn-tactile ${
                         detailSubTab === 'audit'
                           ? 'bg-sky-600 text-white font-bold shadow-sky-glow'
                           : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                       }`}
                     >
                       <Terminal className="w-3.5 h-3.5" />
-                      Audit Trail ({diagnosis?.audit_events?.length || 0})
+                      <span>Audit Trail</span>
+                      <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+                        detailSubTab === 'audit' ? 'bg-sky-700/80 text-white' : 'bg-slate-200/70 text-slate-700'
+                      }`}>
+                        {diagnosis?.audit_events?.length || 0}
+                      </span>
                     </button>
                   </div>
 
-                  {/* Focused Single-Panel Rendering - eliminates huge vertical scrolling */}
+                  {/* Focused Single-Panel Rendering with fluid entrance animation */}
                   {diagnosis && (
-                    <div className="space-y-4">
+                    <div key={detailSubTab} className="animate-slide-up space-y-4">
                       {detailSubTab === 'timeline' && (
                         <IncidentTimeline timeline={diagnosis.timeline} />
                       )}
@@ -375,17 +395,21 @@ export const App: React.FC = () => {
             </main>
           </div>
         ) : activeTab === 'topology' ? (
-          <main className="flex-1 overflow-y-auto p-4 md:p-6 pb-16">
+          <main key="topology" className="animate-slide-up flex-1 overflow-y-auto p-4 md:p-6 pb-16">
             {activeIncident && <ServiceTopology activeIncident={activeIncident} />}
           </main>
         ) : (
-          <main className="flex-1 overflow-y-auto p-4 md:p-6 pb-16">
+          <main key="evaluation" className="animate-slide-up flex-1 overflow-y-auto p-4 md:p-6 pb-16">
             {evaluation && <EvaluationDashboard evaluation={evaluation} />}
           </main>
         )}
 
         {/* Live Multi-Agent Execution Terminal Drawer */}
-        <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 border-t border-slate-200 shadow-xl backdrop-blur-md transition-all">
+        <div
+          className={`fixed bottom-0 left-0 right-0 z-40 bg-white/95 border-t border-slate-200 shadow-xl backdrop-blur-md transition-all duration-300 ease-in-out ${
+            terminalOpen ? 'h-60' : 'h-10'
+          }`}
+        >
           <div
             onClick={() => setTerminalOpen(!terminalOpen)}
             className="px-4 py-2 flex items-center justify-between cursor-pointer hover:bg-slate-50 select-none border-b border-slate-100"
@@ -404,19 +428,19 @@ export const App: React.FC = () => {
                 {agentLogs.length} events
               </span>
               {terminalOpen ? (
-                <ChevronDown className="w-4 h-4 text-slate-600" />
+                <ChevronDown className="w-4 h-4 text-slate-600 transition-transform" />
               ) : (
-                <ChevronUp className="w-4 h-4 text-slate-600" />
+                <ChevronUp className="w-4 h-4 text-slate-600 transition-transform" />
               )}
             </div>
           </div>
 
           {terminalOpen && (
-            <div className="p-3 max-h-48 overflow-y-auto font-mono text-[11px] bg-slate-900 text-slate-200 space-y-1 divide-y divide-slate-800/60 shadow-inner">
+            <div className="p-3 h-[calc(15rem-2.5rem)] overflow-y-auto font-mono text-[11px] bg-slate-900 text-slate-200 space-y-1 divide-y divide-slate-800/60 shadow-inner scrollbar-thin">
               {agentLogs.map((log, idx) => (
                 <div
                   key={idx}
-                  className={`pt-1 ${
+                  className={`pt-1 animate-slide-up ${
                     log.includes('[DECISION]') || log.includes('[VERIFICATION]')
                       ? 'text-emerald-400 font-bold'
                       : log.includes('[OPERATOR]')

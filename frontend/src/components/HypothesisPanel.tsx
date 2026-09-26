@@ -8,7 +8,6 @@ import {
   Sparkles,
   Layers,
   ChevronDown,
-  ChevronUp,
 } from 'lucide-react';
 import { sounds } from '../utils/audio';
 import { HypothesisChart } from './charts/HypothesisChart';
@@ -93,11 +92,12 @@ export const HypothesisPanel: React.FC<HypothesisPanelProps> = ({
             return (
               <div
                 key={hyp.hypothesis_id}
-                className={`rounded-xl border transition-all duration-200 ${
+                className={`rounded-xl border transition-all duration-200 stagger-item ${
                   isTopRanked
-                    ? 'bg-sky-50/20 border-sky-300 shadow-2xs'
+                    ? 'bg-sky-50/20 border-sky-300 shadow-2xs hover:border-sky-400'
                     : 'bg-slate-50/60 border-slate-200 hover:border-slate-300 hover:bg-white'
                 }`}
+                style={{ animationDelay: `${index * 60}ms` }}
               >
                 {/* Header / Summary row */}
                 <div
@@ -106,16 +106,16 @@ export const HypothesisPanel: React.FC<HypothesisPanelProps> = ({
                 >
                   <div className="space-y-1.5 flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-mono text-xs font-bold text-sky-800 bg-sky-50 border border-sky-200 px-2 py-0.5 rounded">
+                      <span className="font-mono text-xs font-bold text-sky-800 bg-sky-50 border border-sky-200 px-2 py-0.5 rounded shadow-2xs">
                         #{index + 1} {hyp.hypothesis_id}
                       </span>
-                      <span className="flex items-center gap-1 font-mono text-[10px] text-slate-600 bg-white px-2 py-0.5 rounded border border-slate-200 font-medium">
+                      <span className="flex items-center gap-1 font-mono text-[10px] text-slate-600 bg-white px-2 py-0.5 rounded border border-slate-200 font-medium shadow-2xs">
                         <Layers className="w-2.5 h-2.5 text-slate-400" />
                         {hyp.service}
                       </span>
                       {getStatusBadge(hyp.status)}
                       {isTopRanked && (
-                        <span className="flex items-center gap-1 text-[10px] font-semibold text-sky-800 bg-sky-50 px-2 py-0.5 rounded-full border border-sky-200">
+                        <span className="flex items-center gap-1 text-[10px] font-semibold text-sky-800 bg-sky-50 px-2 py-0.5 rounded-full border border-sky-200 shadow-2xs">
                           <Sparkles className="w-2.5 h-2.5 text-sky-600" />
                           Top Confidence
                         </span>
@@ -147,12 +147,12 @@ export const HypothesisPanel: React.FC<HypothesisPanelProps> = ({
                       </div>
                     </div>
 
-                    <div className="p-1 text-slate-400 hover:text-slate-600 transition-colors">
-                      {isExpanded ? (
-                        <ChevronUp className="w-4 h-4" />
-                      ) : (
-                        <ChevronDown className="w-4 h-4" />
-                      )}
+                    <div className="p-1 text-slate-400 hover:text-slate-700 transition-transform duration-200">
+                      <ChevronDown
+                        className={`w-4 h-4 transition-transform duration-200 ${
+                          isExpanded ? 'rotate-180 text-sky-600' : ''
+                        }`}
+                      />
                     </div>
                   </div>
                 </div>
@@ -161,11 +161,11 @@ export const HypothesisPanel: React.FC<HypothesisPanelProps> = ({
                 <div className="px-4 pb-2">
                   <div className="w-full bg-slate-200/70 h-1.5 rounded-full overflow-hidden flex">
                     <div
-                      className="bg-sky-600 h-full transition-all duration-500"
+                      className="bg-gradient-to-r from-sky-500 to-sky-600 h-full transition-all duration-700 ease-out"
                       style={{ width: `${hyp.score * 100}%` }}
                     />
                     <div
-                      className="bg-emerald-500 h-full opacity-80 transition-all duration-500"
+                      className="bg-gradient-to-r from-emerald-400 to-emerald-500 h-full opacity-80 transition-all duration-700 ease-out"
                       style={{ width: `${Math.max(0, (hyp.confidence - hyp.score) * 100)}%` }}
                     />
                   </div>
@@ -173,10 +173,10 @@ export const HypothesisPanel: React.FC<HypothesisPanelProps> = ({
 
                 {/* Expanded details */}
                 {isExpanded && (
-                  <div className="p-4 pt-2 border-t border-slate-200 bg-white space-y-3 animate-fade-in">
+                  <div className="p-4 pt-2 border-t border-slate-200 bg-white space-y-3 animate-slide-up">
                     {/* Evidence Association */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                      <div className="p-3 rounded-lg bg-emerald-50/50 border border-emerald-200">
+                      <div className="p-3 rounded-lg bg-emerald-50/50 border border-emerald-200/80">
                         <div className="font-semibold text-emerald-800 text-[11px] mb-1.5 flex items-center gap-1.5">
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Supporting Evidence ({hyp.supporting_evidence?.length || 0})
                         </div>
@@ -188,9 +188,10 @@ export const HypothesisPanel: React.FC<HypothesisPanelProps> = ({
                               <button
                                 key={evId}
                                 onClick={() => onSelectEvidence && onSelectEvidence(evId)}
-                                className="font-mono text-[10px] px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200 hover:bg-emerald-200 transition-colors cursor-pointer font-medium"
+                                className="font-mono text-[10px] px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200 hover:bg-emerald-200 transition-all cursor-pointer font-medium btn-tactile shadow-2xs"
+                                title="Click to view correlated evidence in Evidence Tab"
                               >
-                                {evId}
+                                {evId} →
                               </button>
                             ))
                           )}
@@ -209,9 +210,10 @@ export const HypothesisPanel: React.FC<HypothesisPanelProps> = ({
                               <button
                                 key={evId}
                                 onClick={() => onSelectEvidence && onSelectEvidence(evId)}
-                                className="font-mono text-[10px] px-2 py-0.5 rounded bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 transition-colors cursor-pointer font-medium"
+                                className="font-mono text-[10px] px-2 py-0.5 rounded bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 transition-all cursor-pointer font-medium btn-tactile shadow-2xs"
+                                title="Click to view correlated evidence in Evidence Tab"
                               >
-                                {evId}
+                                {evId} →
                               </button>
                             ))
                           )}
