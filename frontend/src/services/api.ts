@@ -7,11 +7,14 @@ import type {
 } from '../types';
 import { MOCK_INCIDENTS, MOCK_DIAGNOSES, MOCK_EVALUATION } from '../mock/mockData';
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const DEFAULT_RENDER_URL = 'https://agentic-ai-for-autonomous-incident.onrender.com';
+const isLocalhost = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+const BASE_URL = import.meta.env.VITE_API_URL || (isLocalhost ? 'http://localhost:8000' : DEFAULT_RENDER_URL);
 
 const client = axios.create({
   baseURL: BASE_URL,
-  timeout: 5000,
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
   },
