@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# Database & local state
+*.db
+*.sqlite3
+incidents.db
+
+# Node / Frontend
+node_modules/
+dist/
+.DS_Store
+
+# IDE / Gemini
+.idea/
+.vscode/
+*.swp

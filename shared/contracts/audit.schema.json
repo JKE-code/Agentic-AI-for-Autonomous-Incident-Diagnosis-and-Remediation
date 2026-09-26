@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AuditEvent",
+  "type": "object",
+  "required": ["audit_id", "incident_id", "timestamp", "actor", "event", "details"],
+  "properties": {
+    "audit_id": { "type": "string" },
+    "incident_id": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "actor": { "type": "string", "enum": ["system", "ai", "human"] },
+    "event": {
+      "type": "string",
+      "enum": [
+        "INCIDENT_CREATED",
+        "AGENT_STARTED",
+        "EVIDENCE_COLLECTED",
+        "HYPOTHESIS_CREATED",
+        "HYPOTHESIS_VERIFIED",
+        "REMEDIATION_PROPOSED",
+        "APPROVAL_REQUESTED",
+        "APPROVAL_GRANTED",
+        "APPROVAL_REJECTED",
+        "ACTION_EXECUTED",
+        "HEALTH_CHECK",
+        "ROLLBACK_EXECUTED",
+        "INCIDENT_RESOLVED"
+      ]
+    },
+    "action_id": { "type": ["string", "null"] },
+    "details": { "type": "string" },
+    "metadata": { "type": "object" }
+  }
+}
