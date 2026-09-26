@@ -18,6 +18,7 @@ import {
   BarChart2,
   ShieldCheck,
   Terminal,
+  Layers,
   ChevronUp,
   ChevronDown,
   PanelLeftClose,
