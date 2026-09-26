@@ -63,7 +63,12 @@ class TimelineItem(BaseModel):
     source: str
     service: str
     summary: str
+    event: Optional[str] = None
     anomaly: bool = False
+
+    def model_post_init(self, __context):
+        if not self.event:
+            self.event = self.summary
 
 class Evidence(BaseModel):
     evidence_id: str

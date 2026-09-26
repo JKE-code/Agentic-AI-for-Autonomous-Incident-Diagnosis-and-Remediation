@@ -39,6 +39,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCENARIOS_DIR = os.path.join(BASE_DIR, "data", "scenarios")
 
 class DiagnoseRequest(BaseModel):
+    model_config = {"extra": "allow"}
     incident_id: Optional[str] = None
     incident: Optional[Incident] = None
 
@@ -92,7 +93,14 @@ def diagnose_incident(req: DiagnoseRequest):
     if req.incident:
         incident = req.incident
     elif req.incident_id:
-        incident = load_incident_by_id(req.incident_id)
+        extra = getattr(req, "__pydantic_extra__", {}) or {}
+        if "services" in extra and "logs" in extra:
+            try:
+                incident = Incident(incident_id=req.incident_id, **extra)
+            except Exception:
+                incident = load_incident_by_id(req.incident_id)
+        else:
+            incident = load_incident_by_id(req.incident_id)
     else:
         raise HTTPException(status_code=400, detail="Must provide incident_id or incident body")
         
