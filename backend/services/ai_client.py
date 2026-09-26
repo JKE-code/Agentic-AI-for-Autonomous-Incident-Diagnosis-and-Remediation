@@ -28,6 +28,21 @@ async def request_ai_diagnosis(incident_id: str, incident_payload: Dict[str, Any
     # Graceful high-fidelity mock fallback
     return get_mock_diagnosis(incident_id)
 
+async def resume_ai_workflow(thread_id: str, approval: str) -> Dict[str, Any]:
+    """
+    Notifies the LangGraph service at /resume with the human operator decision.
+    """
+    url = f"{AI_SERVICE_URL}/resume"
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            resp = await client.post(url, json={"thread_id": thread_id, "approval": approval})
+            if resp.status_code == 200:
+                logger.info(f"Successfully resumed AI graph for {thread_id} with approval={approval}")
+                return resp.json()
+    except Exception as e:
+        logger.debug(f"AI service /resume not available ({e}). Handled locally.")
+    return {"status": "RESUMED_LOCALLY", "approval": approval}
+
 async def check_ai_health() -> bool:
     try:
         async with httpx.AsyncClient(timeout=2.0) as client:

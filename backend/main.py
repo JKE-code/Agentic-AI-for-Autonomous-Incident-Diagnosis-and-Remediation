@@ -1,5 +1,13 @@
+import os
 import logging
 from contextlib import asynccontextmanager
+# Load environment variables from .env if python-dotenv is present
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.db.database import init_db, SessionLocal

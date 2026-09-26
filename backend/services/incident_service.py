@@ -276,3 +276,36 @@ async def diagnose_incident(db: Session, incident_id: str) -> dict:
     inc.status = "DIAGNOSED"
     db.commit()
     return diagnosis
+
+def reset_incident(db: Session, incident_id: str) -> bool:
+    from backend.db.models import ApprovalModel
+    from backend.services.sandbox_service import reset_sandbox
+    
+    inc = get_incident(db, incident_id)
+    if not inc:
+        return False
+
+    inc.status = "OPEN"
+    db.query(EvidenceModel).filter(EvidenceModel.incident_id == incident_id).delete()
+    db.query(HypothesisModel).filter(HypothesisModel.incident_id == incident_id).delete()
+    db.query(RemediationModel).filter(RemediationModel.incident_id == incident_id).delete()
+    db.query(ApprovalModel).filter(ApprovalModel.incident_id == incident_id).delete()
+
+    reset_sandbox()
+    
+    log_audit_event(
+        db=db,
+        incident_id=incident_id,
+        event="INCIDENT_CREATED",
+        actor="human",
+        details=f"Incident {incident_id} state was reset by operator for re-investigation demo."
+    )
+    db.commit()
+    return True
+
+def reset_all_incidents(db: Session) -> bool:
+    incidents = list_incidents(db)
+    for inc in incidents:
+        reset_incident(db, inc.incident_id)
+    return True
+

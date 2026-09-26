@@ -6,8 +6,9 @@ from backend.db.models import RemediationModel, IncidentModel
 from backend.services.audit_service import log_audit_event
 from backend.schemas.api_models import ActionEnum
 
-# Simulated sandbox state for microservices
-SANDBOX_STATE: Dict[str, Dict[str, Any]] = {
+import copy
+
+INITIAL_SANDBOX_STATE: Dict[str, Dict[str, Any]] = {
     "payment-service": {
         "version": "v1.5",
         "healthy": False,
@@ -51,6 +52,12 @@ SANDBOX_STATE: Dict[str, Dict[str, Any]] = {
         "dependencies_enabled": {}
     }
 }
+
+SANDBOX_STATE: Dict[str, Dict[str, Any]] = copy.deepcopy(INITIAL_SANDBOX_STATE)
+
+def reset_sandbox():
+    global SANDBOX_STATE
+    SANDBOX_STATE = copy.deepcopy(INITIAL_SANDBOX_STATE)
 
 def is_docker_available() -> bool:
     try:
