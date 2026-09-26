@@ -17,6 +17,8 @@ interface NavbarProps {
   isLiveBackend: boolean;
   onResetDemo: () => void;
   onTriggerDemoFlow: () => void;
+  onCheckBackend?: () => void;
+  isResetting?: boolean;
   activeIncidentId: string;
 }
 
@@ -26,6 +28,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   isLiveBackend,
   onResetDemo,
   onTriggerDemoFlow,
+  onCheckBackend,
+  isResetting = false,
   activeIncidentId,
 }) => {
   const [soundEnabled, setSoundEnabled] = useState(true);
@@ -50,6 +54,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   const handleDemo = () => {
     sounds.playBlip();
     onTriggerDemoFlow();
+  };
+
+  const handleCheckBackendClick = () => {
+    sounds.playBlip();
+    if (onCheckBackend) {
+      onCheckBackend();
+    }
   };
 
   return (
@@ -113,7 +124,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={toggleSound}
             className="p-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-500 hover:text-slate-800 border border-slate-200 transition-colors cursor-pointer"
-            title={soundEnabled ? 'Mute audio cues' : 'Unmute audio cues'}
+            title={soundEnabled ? 'Audio feedback: ON (click to mute)' : 'Audio feedback: MUTED (click to unmute)'}
           >
             {soundEnabled ? (
               <Volume2 className="w-4 h-4 text-sky-600" />
@@ -123,34 +134,36 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
 
           {/* Interactive Demo Flow */}
-          {activeIncidentId === 'INC-001' && (
-            <button
-              onClick={handleDemo}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-emerald-glow active:scale-98 cursor-pointer"
-              title="Run 1-Click Interactive Walkthrough of payment failure diagnosis & remediation"
-            >
-              <Zap className="w-3.5 h-3.5 fill-current" />
-              <span>Demo Walkthrough</span>
-            </button>
-          )}
+          <button
+            onClick={handleDemo}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-all shadow-emerald-glow active:scale-98 cursor-pointer"
+            title={`Run 1-Click Interactive Walkthrough of incident diagnosis & remediation (${activeIncidentId})`}
+          >
+            <Zap className="w-3.5 h-3.5 fill-current" />
+            <span>Demo Walkthrough</span>
+          </button>
 
           {/* Reset State Button */}
           <button
             onClick={handleReset}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold transition-all active:scale-98 shadow-2xs cursor-pointer"
+            disabled={isResetting}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold transition-all active:scale-98 shadow-2xs cursor-pointer disabled:opacity-60"
             title="Reset incident and database state"
           >
-            <RotateCcw className="w-3.5 h-3.5 text-slate-400" />
-            <span>Reset</span>
+            <RotateCcw className={`w-3.5 h-3.5 text-slate-400 ${isResetting ? 'animate-spin text-sky-600' : ''}`} />
+            <span>{isResetting ? 'Resetting...' : 'Reset'}</span>
           </button>
 
-          {/* Backend Status indicator */}
-          <div
-            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-mono font-semibold ${
+          {/* Backend Status indicator - Interactive */}
+          <button
+            onClick={handleCheckBackendClick}
+            type="button"
+            className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-xs font-mono font-semibold transition-all cursor-pointer hover:shadow-xs active:scale-98 ${
               isLiveBackend
-                ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-                : 'bg-sky-50 border-sky-200 text-sky-800'
+                ? 'bg-emerald-50 hover:bg-emerald-100/70 border-emerald-200 text-emerald-800'
+                : 'bg-sky-50 hover:bg-sky-100/70 border-sky-200 text-sky-800'
             }`}
+            title="Click to re-ping backend (:8000) & AI service (:8001)"
           >
             <span
               className={`w-2 h-2 rounded-full ${
@@ -158,7 +171,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               }`}
             />
             <span>{isLiveBackend ? 'Backend :8000 Live' : 'Sandbox Mock'}</span>
-          </div>
+          </button>
         </div>
       </div>
     </header>

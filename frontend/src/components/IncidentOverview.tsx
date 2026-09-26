@@ -20,6 +20,7 @@ interface IncidentOverviewProps {
   diagnosis: Diagnosis | null;
   isDiagnosing: boolean;
   onDiagnose: () => void;
+  onSelectHypothesis?: () => void;
 }
 
 export const IncidentOverview: React.FC<IncidentOverviewProps> = ({
@@ -27,6 +28,7 @@ export const IncidentOverview: React.FC<IncidentOverviewProps> = ({
   diagnosis,
   isDiagnosing,
   onDiagnose,
+  onSelectHypothesis,
 }) => {
   const [showTelemetryChart, setShowTelemetryChart] = useState(true);
 
@@ -164,19 +166,28 @@ export const IncidentOverview: React.FC<IncidentOverviewProps> = ({
               )}
             </button>
 
-            {/* Root cause quick status preview */}
+            {/* Root cause quick status preview - clickable to navigate */}
             {diagnosis?.root_cause && (
-              <div className="p-2.5 rounded-xl bg-slate-50 border border-emerald-200/80 text-xs flex items-center justify-between gap-3 shadow-2xs hover:bg-emerald-50/20 transition-colors">
+              <button
+                type="button"
+                onClick={() => {
+                  sounds.playBlip();
+                  if (onSelectHypothesis) onSelectHypothesis();
+                }}
+                className="p-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50/80 border border-slate-200 hover:border-emerald-300 text-xs flex items-center justify-between gap-3 shadow-2xs transition-all cursor-pointer text-left group"
+                title="Click to inspect verified hypothesis and tests"
+              >
                 <div className="flex items-center gap-2">
-                  <Cpu className="w-4 h-4 text-emerald-600" />
+                  <Cpu className="w-4 h-4 text-emerald-600 group-hover:scale-110 transition-transform" />
                   <span className="text-slate-700 font-medium truncate max-w-[210px]">
                     Cause: {diagnosis.root_cause.service || diagnosis.root_cause.cause}
                   </span>
                 </div>
-                <span className="font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 shadow-2xs">
+                <span className="font-mono font-bold text-emerald-700 bg-emerald-50 group-hover:bg-emerald-100 px-2 py-0.5 rounded border border-emerald-200 flex items-center gap-1">
                   {(diagnosis.confidence * 100).toFixed(0)}% conf
+                  <ArrowRight className="w-3 h-3 text-emerald-600 inline ml-0.5" />
                 </span>
-              </div>
+              </button>
             )}
           </div>
         </div>

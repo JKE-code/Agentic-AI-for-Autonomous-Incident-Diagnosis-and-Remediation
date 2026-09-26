@@ -28,8 +28,8 @@ import { sounds } from './utils/audio';
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'command-center' | 'topology' | 'evaluation'>('command-center');
   const [detailSubTab, setDetailSubTab] = useState<
-    'timeline' | 'hypotheses' | 'evidence' | 'remediation' | 'audit'
-  >('timeline');
+    'all' | 'timeline' | 'hypotheses' | 'evidence' | 'remediation' | 'audit'
+  >('all');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const [incidents, setIncidents] = useState<Incident[]>([]);
@@ -39,6 +39,15 @@ export const App: React.FC = () => {
   const [isLiveBackend, setIsLiveBackend] = useState<boolean>(false);
   const [isDiagnosing, setIsDiagnosing] = useState<boolean>(false);
   const [highlightedEvidenceId, setHighlightedEvidenceId] = useState<string>('');
+  const [isResetting, setIsResetting] = useState<boolean>(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => {
+      setToastMessage(null);
+    }, 3500);
+  };
 
   // Live Agent Terminal Drawer State
   const [terminalOpen, setTerminalOpen] = useState(false);
@@ -72,6 +81,21 @@ export const App: React.FC = () => {
     setIsLiveBackend(live);
   };
 
+  const handleCheckBackend = async () => {
+    addAgentLog(`[SYSTEM] Manual health-probe dispatched to backend :8000 and AI service :8001...`);
+    const live = await apiService.checkBackendHealth();
+    setIsLiveBackend(live);
+    if (live) {
+      sounds.playSuccessChime();
+      showToast('Backend (:8000) & AI (:8001) Connected & Operational');
+      addAgentLog(`[SYSTEM] Health probe confirmed: FastAPI :8000 is UP, LangGraph AI service is active.`);
+    } else {
+      sounds.playAlertPing();
+      showToast('Backend offline - using in-memory sandbox mocks');
+      addAgentLog(`[SYSTEM] Warning: Backend unreachable. Running in high-fidelity mock mode.`);
+    }
+  };
+
   const loadData = async () => {
     await checkBackend();
     const incList = await apiService.getIncidents();
@@ -102,6 +126,21 @@ export const App: React.FC = () => {
     addAgentLog(`Incident selected: #${id} (${inc?.title || 'Unknown'})`);
   };
 
+  const handleSelectStep = (
+    step: 'all' | 'timeline' | 'hypotheses' | 'evidence' | 'remediation' | 'audit'
+  ) => {
+    sounds.playBlip();
+    setDetailSubTab(step);
+    if (step !== 'all') {
+      setTimeout(() => {
+        const el = document.getElementById('diagnostic-panels-container');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 50);
+    }
+  };
+
   const handleDiagnose = async () => {
     if (!activeIncidentId) return;
     setIsDiagnosing(true);
@@ -120,6 +159,7 @@ export const App: React.FC = () => {
     setDiagnosis({ ...updatedDiag });
     setIsDiagnosing(false);
     sounds.playSuccessChime();
+    showToast(`Diagnosis Complete: ${updatedDiag.root_cause?.cause || 'Identified'}`);
     addAgentLog(`[DECISION] Primary root cause verified with ${(updatedDiag.confidence * 100).toFixed(0)}% confidence.`);
 
     // Refresh incident list status
@@ -136,6 +176,8 @@ export const App: React.FC = () => {
     await apiService.approveAction(actionId, activeIncidentId);
     await apiService.executeRemediation(actionId, activeIncidentId);
 
+    sounds.playSuccessChime();
+    showToast(`Remediation Executed: #${activeIncidentId} RESOLVED`);
     addAgentLog(`[VERIFICATION] Probing telemetry: Error rate dropped to < 0.2%, p99 latency < 150ms.`);
     addAgentLog(`[ORCHESTRATOR] Incident #${activeIncidentId} transitioned to RESOLVED.`);
 
@@ -150,6 +192,7 @@ export const App: React.FC = () => {
     if (!activeIncidentId) return;
     addAgentLog(`[OPERATOR] Rejected remediation ${actionId}. Manual escalation initiated.`);
     await apiService.rejectAction(actionId, activeIncidentId);
+    showToast(`Remediation ${actionId} rejected`);
     const updatedDiag = await apiService.getDiagnosis(activeIncidentId);
     setDiagnosis(updatedDiag ? { ...updatedDiag } : null);
   };
@@ -158,31 +201,36 @@ export const App: React.FC = () => {
     if (!activeIncidentId) return;
     addAgentLog(`[OPERATOR] Triggered manual emergency rollback on ${actionId}.`);
     await apiService.rollbackRemediation(actionId, activeIncidentId);
+    showToast(`Rollback executed on ${actionId}`);
     const updatedDiag = await apiService.getDiagnosis(activeIncidentId);
     setDiagnosis(updatedDiag ? { ...updatedDiag } : null);
   };
 
   const handleResetDemo = async () => {
+    setIsResetting(true);
     addAgentLog(`[SYSTEM] Full system reset initiated. Resetting SQLite tables and sandbox state...`);
     await apiService.resetAll();
     await loadData();
-    sounds.playBlip();
+    setIsResetting(false);
+    sounds.playSuccessChime();
+    showToast('System Reset Complete: All 6 Scenarios Restored');
     addAgentLog(`[SYSTEM] Reset completed. All 6 scenarios ready.`);
   };
 
   const handleTriggerDemoFlow = async () => {
     setActiveIncidentId('INC-001');
     setActiveTab('command-center');
-    setDetailSubTab('timeline');
+    handleSelectStep('timeline');
 
+    showToast('Demo Walkthrough: Diagnosing INC-001...');
     addAgentLog(`[DEMO] Triggering end-to-end incident walkthrough for INC-001...`);
     await handleDiagnose();
-    setDetailSubTab('remediation');
+    handleSelectStep('remediation');
   };
 
   const handleSelectEvidenceFromHypothesis = (evId: string) => {
     setHighlightedEvidenceId(evId);
-    setDetailSubTab('evidence');
+    handleSelectStep('evidence');
     sounds.playBlip();
   };
 
@@ -191,6 +239,14 @@ export const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans selection:bg-sky-500/20 selection:text-sky-900">
+      {/* Dynamic Toast Feedback Notification */}
+      {toastMessage && (
+        <div className="fixed top-16 right-6 z-50 animate-fade-in bg-slate-900/95 text-white text-xs font-mono px-4 py-2.5 rounded-xl border border-sky-500/40 shadow-xl backdrop-blur-md flex items-center gap-2.5">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
       {/* Top Navigation */}
       <Navbar
         activeTab={activeTab}
@@ -198,6 +254,8 @@ export const App: React.FC = () => {
         isLiveBackend={isLiveBackend}
         onResetDemo={handleResetDemo}
         onTriggerDemoFlow={handleTriggerDemoFlow}
+        onCheckBackend={handleCheckBackend}
+        isResetting={isResetting}
         activeIncidentId={activeIncidentId}
       />
 
@@ -208,7 +266,7 @@ export const App: React.FC = () => {
           activeIncidentId={activeIncidentId}
           onSelectIncident={handleSelectIncident}
           activeStep={detailSubTab}
-          onSelectStep={(step) => setDetailSubTab(step)}
+          onSelectStep={handleSelectStep}
         />
       )}
 
@@ -257,15 +315,27 @@ export const App: React.FC = () => {
                     diagnosis={diagnosis}
                     isDiagnosing={isDiagnosing}
                     onDiagnose={handleDiagnose}
+                    onSelectHypothesis={() => handleSelectStep('hypotheses')}
                   />
 
                   {/* Sub-tab navigation for focused inspection */}
-                  <div className="flex items-center gap-1.5 border-b border-slate-200/90 pb-2 text-xs font-semibold overflow-x-auto scrollbar-thin">
+                  <div
+                    id="diagnostic-panels-container"
+                    className="scroll-mt-4 flex items-center gap-1.5 border-b border-slate-200/90 pb-2 text-xs font-semibold overflow-x-auto scrollbar-thin"
+                  >
                     <button
-                      onClick={() => {
-                        sounds.playBlip();
-                        setDetailSubTab('timeline');
-                      }}
+                      onClick={() => handleSelectStep('all')}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer btn-tactile ${
+                        detailSubTab === 'all'
+                          ? 'bg-sky-600 text-white font-bold shadow-sky-glow'
+                          : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                      }`}
+                    >
+                      <Layers className="w-3.5 h-3.5" />
+                      <span>All Panels</span>
+                    </button>
+                    <button
+                      onClick={() => handleSelectStep('timeline')}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer btn-tactile ${
                         detailSubTab === 'timeline'
                           ? 'bg-sky-600 text-white font-bold shadow-sky-glow'
@@ -281,10 +351,7 @@ export const App: React.FC = () => {
                       </span>
                     </button>
                     <button
-                      onClick={() => {
-                        sounds.playBlip();
-                        setDetailSubTab('hypotheses');
-                      }}
+                      onClick={() => handleSelectStep('hypotheses')}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer btn-tactile ${
                         detailSubTab === 'hypotheses'
                           ? 'bg-sky-600 text-white font-bold shadow-sky-glow'
@@ -300,10 +367,7 @@ export const App: React.FC = () => {
                       </span>
                     </button>
                     <button
-                      onClick={() => {
-                        sounds.playBlip();
-                        setDetailSubTab('evidence');
-                      }}
+                      onClick={() => handleSelectStep('evidence')}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer btn-tactile ${
                         detailSubTab === 'evidence'
                           ? 'bg-sky-600 text-white font-bold shadow-sky-glow'
@@ -319,10 +383,7 @@ export const App: React.FC = () => {
                       </span>
                     </button>
                     <button
-                      onClick={() => {
-                        sounds.playBlip();
-                        setDetailSubTab('remediation');
-                      }}
+                      onClick={() => handleSelectStep('remediation')}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer btn-tactile ${
                         detailSubTab === 'remediation'
                           ? 'bg-emerald-600 text-white font-bold shadow-emerald-glow'
@@ -333,10 +394,7 @@ export const App: React.FC = () => {
                       <span>Remediation & Approval</span>
                     </button>
                     <button
-                      onClick={() => {
-                        sounds.playBlip();
-                        setDetailSubTab('audit');
-                      }}
+                      onClick={() => handleSelectStep('audit')}
                       className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-200 cursor-pointer btn-tactile ${
                         detailSubTab === 'audit'
                           ? 'bg-sky-600 text-white font-bold shadow-sky-glow'
@@ -353,28 +411,28 @@ export const App: React.FC = () => {
                     </button>
                   </div>
 
-                  {/* Focused Single-Panel Rendering with fluid entrance animation */}
+                  {/* Panel Rendering: Supports All Panels simultaneously OR focused inspection */}
                   {diagnosis && (
-                    <div key={detailSubTab} className="animate-slide-up space-y-4">
-                      {detailSubTab === 'timeline' && (
+                    <div key={detailSubTab} className="animate-slide-up space-y-6">
+                      {(detailSubTab === 'all' || detailSubTab === 'timeline') && (
                         <IncidentTimeline timeline={diagnosis.timeline} />
                       )}
 
-                      {detailSubTab === 'hypotheses' && (
+                      {(detailSubTab === 'all' || detailSubTab === 'hypotheses') && (
                         <HypothesisPanel
                           hypotheses={diagnosis.hypotheses}
                           onSelectEvidence={handleSelectEvidenceFromHypothesis}
                         />
                       )}
 
-                      {detailSubTab === 'evidence' && (
+                      {(detailSubTab === 'all' || detailSubTab === 'evidence') && (
                         <EvidencePanel
                           evidence={diagnosis.evidence}
                           highlightedEvidenceId={highlightedEvidenceId}
                         />
                       )}
 
-                      {detailSubTab === 'remediation' &&
+                      {(detailSubTab === 'all' || detailSubTab === 'remediation') &&
                         diagnosis.remediation && (
                           <RemediationPanel
                             remediation={diagnosis.remediation}
@@ -385,7 +443,7 @@ export const App: React.FC = () => {
                           />
                         )}
 
-                      {detailSubTab === 'audit' && (
+                      {(detailSubTab === 'all' || detailSubTab === 'audit') && (
                         <AuditTrail auditEvents={diagnosis.audit_events} />
                       )}
                     </div>

@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { sounds } from '../utils/audio';
 
-export type DiagnosticStep = 'timeline' | 'hypotheses' | 'evidence' | 'remediation' | 'audit';
+export type DiagnosticStep = 'all' | 'timeline' | 'hypotheses' | 'evidence' | 'remediation' | 'audit';
 
 interface ScenarioBarProps {
   incidents: Incident[];
@@ -30,6 +30,7 @@ export const ScenarioBar: React.FC<ScenarioBarProps> = ({
   onSelectStep,
 }) => {
   const steps: { id: DiagnosticStep; label: string; icon: React.ReactNode; color: string }[] = [
+    { id: 'all', label: 'All Panels', icon: <Layers className="w-3.5 h-3.5" />, color: 'sky' },
     { id: 'timeline', label: '1. Telemetry', icon: <Activity className="w-3.5 h-3.5" />, color: 'sky' },
     { id: 'hypotheses', label: '2. Hypotheses', icon: <BrainCircuit className="w-3.5 h-3.5" />, color: 'sky' },
     { id: 'evidence', label: '3. Evidence', icon: <BarChart2 className="w-3.5 h-3.5" />, color: 'sky' },
