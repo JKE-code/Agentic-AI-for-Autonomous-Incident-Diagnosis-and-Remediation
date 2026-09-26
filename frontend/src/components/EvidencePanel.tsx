@@ -39,60 +39,60 @@ export const EvidencePanel: React.FC<EvidencePanelProps> = ({
   const getSourceIcon = (source: EvidenceSource | string) => {
     switch (source) {
       case 'logs':
-        return <FileText className="w-3.5 h-3.5 text-amber-400" />;
+        return <FileText className="w-3.5 h-3.5 text-amber-600" />;
       case 'metrics':
-        return <BarChart2 className="w-3.5 h-3.5 text-blue-400" />;
+        return <BarChart2 className="w-3.5 h-3.5 text-sky-600" />;
       case 'traces':
-        return <Network className="w-3.5 h-3.5 text-rose-400" />;
+        return <Network className="w-3.5 h-3.5 text-rose-600" />;
       case 'deployments':
-        return <GitBranch className="w-3.5 h-3.5 text-purple-400" />;
+        return <GitBranch className="w-3.5 h-3.5 text-sky-700" />;
       case 'dependencies':
-        return <Network className="w-3.5 h-3.5 text-emerald-400" />;
+        return <Network className="w-3.5 h-3.5 text-emerald-600" />;
       default:
-        return <FileText className="w-3.5 h-3.5 text-slate-400" />;
+        return <FileText className="w-3.5 h-3.5 text-slate-500" />;
     }
   };
 
   const getSourceBadgeColor = (source: EvidenceSource | string) => {
     switch (source) {
       case 'logs':
-        return 'bg-amber-950/40 text-amber-300 border-amber-500/30';
+        return 'bg-amber-50 text-amber-800 border-amber-200';
       case 'metrics':
-        return 'bg-blue-950/40 text-blue-300 border-blue-500/30';
+        return 'bg-sky-50 text-sky-800 border-sky-200';
       case 'traces':
-        return 'bg-rose-950/40 text-rose-300 border-rose-500/30';
+        return 'bg-rose-50 text-rose-800 border-rose-200';
       case 'deployments':
-        return 'bg-purple-950/40 text-purple-300 border-purple-500/30';
+        return 'bg-sky-50 text-sky-800 border-sky-200';
       case 'dependencies':
-        return 'bg-emerald-950/40 text-emerald-300 border-emerald-500/30';
+        return 'bg-emerald-50 text-emerald-800 border-emerald-200';
       default:
-        return 'bg-slate-900 text-slate-300 border-slate-700';
+        return 'bg-slate-100 text-slate-700 border-slate-200';
     }
   };
 
   return (
-    <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 shadow-lg backdrop-blur-sm">
+    <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs animate-fade-in">
       {/* Header and Source Filter Chips */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-800">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-200">
         <div>
-          <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-            <BarChart2 className="w-4 h-4 text-indigo-400" />
+          <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+            <BarChart2 className="w-4 h-4 text-sky-600" />
             Causal Multi-Modal Evidence Panel
           </h3>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-500 mt-0.5">
             Aggregated findings across logs, metrics, traces, deployments, and dependency health.
           </p>
         </div>
 
         {/* Search */}
         <div className="relative w-full md:w-56">
-          <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-500" />
+          <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" />
           <input
             type="text"
             placeholder="Search evidence..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-8 pr-3 py-1.5 bg-slate-950/80 border border-slate-800 rounded-lg text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+            className="w-full pl-8 pr-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-sky-500 shadow-2xs"
           />
         </div>
       </div>
@@ -106,8 +106,8 @@ export const EvidencePanel: React.FC<EvidencePanelProps> = ({
               onClick={() => setSelectedSource(src)}
               className={`px-3 py-1 rounded-lg text-xs font-mono uppercase transition-colors ${
                 selectedSource === src
-                  ? 'bg-indigo-600 text-white font-semibold shadow-sm'
-                  : 'bg-slate-800/80 text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                  ? 'bg-sky-600 text-white font-medium shadow-2xs'
+                  : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
               }`}
             >
               {src}
@@ -127,13 +127,13 @@ export const EvidencePanel: React.FC<EvidencePanelProps> = ({
               key={ev.evidence_id}
               className={`p-4 rounded-xl border transition-all ${
                 isHighlighted
-                  ? 'bg-indigo-950/40 border-indigo-500 ring-2 ring-indigo-500/30'
-                  : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
+                  ? 'bg-sky-50/50 border-sky-400 ring-2 ring-sky-300/40 shadow-xs'
+                  : 'bg-white border-slate-200 hover:border-slate-300'
               }`}
             >
               <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs font-bold text-slate-200 bg-slate-800 px-2 py-0.5 rounded border border-slate-700">
+                  <span className="font-mono text-xs font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
                     {ev.evidence_id}
                   </span>
 
@@ -146,14 +146,14 @@ export const EvidencePanel: React.FC<EvidencePanelProps> = ({
                     {ev.source}
                   </span>
 
-                  <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-900 text-slate-300 border border-slate-800">
+                  <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-slate-50 text-slate-700 border border-slate-200">
                     svc: {ev.service}
                   </span>
                 </div>
 
                 <div className="flex items-center gap-3 text-xs font-mono">
-                  <span className="text-slate-400 flex items-center gap-1">
-                    <Clock className="w-3 h-3 text-slate-500" />
+                  <span className="text-slate-500 flex items-center gap-1">
+                    <Clock className="w-3 h-3 text-slate-400" />
                     {new Date(ev.timestamp).toLocaleTimeString([], {
                       hour: '2-digit',
                       minute: '2-digit',
@@ -161,32 +161,32 @@ export const EvidencePanel: React.FC<EvidencePanelProps> = ({
                     })}
                   </span>
 
-                  <span className="text-slate-400">
-                    Importance: <strong className="text-indigo-300">{(ev.importance * 100).toFixed(0)}%</strong>
+                  <span className="text-slate-600">
+                    Importance: <strong className="text-slate-900">{(ev.importance * 100).toFixed(0)}%</strong>
                   </span>
 
-                  <span className="text-slate-400">
-                    Confidence: <strong className="text-emerald-400">{(ev.confidence * 100).toFixed(0)}%</strong>
+                  <span className="text-slate-600">
+                    Confidence: <strong className="text-emerald-700">{(ev.confidence * 100).toFixed(0)}%</strong>
                   </span>
                 </div>
               </div>
 
               {/* Observation Content */}
-              <p className="text-xs md:text-sm text-slate-200 font-mono bg-slate-900/50 p-2.5 rounded-lg border border-slate-800/80 mb-2 leading-relaxed">
+              <p className="text-xs md:text-sm text-slate-800 font-mono bg-slate-50 p-2.5 rounded-lg border border-slate-200 mb-2 leading-relaxed">
                 {ev.observation}
               </p>
 
               {/* Supports & Contradicts Chips + Raw Data Toggle */}
               <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs">
                 <div className="flex items-center gap-2">
-                  {ev.supports.length > 0 && (
-                    <div className="flex items-center gap-1 text-emerald-400 text-[11px]">
-                      <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-                      <span>Supports:</span>
+                  {ev.supports && ev.supports.length > 0 && (
+                    <div className="flex items-center gap-1 text-emerald-800 text-[11px]">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                      <span className="font-medium">Supports:</span>
                       {ev.supports.map((hyp) => (
                         <span
                           key={hyp}
-                          className="font-mono px-1.5 py-0.2 rounded bg-emerald-950/60 border border-emerald-500/40 text-emerald-300"
+                          className="font-mono px-1.5 py-0.2 rounded bg-emerald-50 border border-emerald-200 text-emerald-800 font-semibold"
                         >
                           {hyp}
                         </span>
@@ -194,14 +194,14 @@ export const EvidencePanel: React.FC<EvidencePanelProps> = ({
                     </div>
                   )}
 
-                  {ev.contradicts.length > 0 && (
-                    <div className="flex items-center gap-1 text-rose-400 text-[11px] ml-2">
-                      <XCircle className="w-3 h-3 text-rose-400" />
-                      <span>Contradicts:</span>
+                  {ev.contradicts && ev.contradicts.length > 0 && (
+                    <div className="flex items-center gap-1 text-rose-700 text-[11px] ml-2">
+                      <XCircle className="w-3 h-3 text-rose-500" />
+                      <span className="font-medium">Contradicts:</span>
                       {ev.contradicts.map((hyp) => (
                         <span
                           key={hyp}
-                          className="font-mono px-1.5 py-0.2 rounded bg-rose-950/60 border border-rose-500/40 text-rose-300"
+                          className="font-mono px-1.5 py-0.2 rounded bg-rose-50 border border-rose-200 text-rose-700 font-semibold"
                         >
                           {hyp}
                         </span>
@@ -215,7 +215,7 @@ export const EvidencePanel: React.FC<EvidencePanelProps> = ({
                     onClick={() =>
                       setExpandedRawId(isRawOpen ? '' : ev.evidence_id)
                     }
-                    className="flex items-center gap-1 text-[11px] text-slate-400 hover:text-slate-200 font-mono transition-colors"
+                    className="flex items-center gap-1 text-[11px] text-sky-700 hover:text-sky-900 font-mono transition-colors cursor-pointer"
                   >
                     {isRawOpen ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
                     {isRawOpen ? 'Hide Raw Telemetry' : 'Inspect Raw Telemetry'}
@@ -225,7 +225,7 @@ export const EvidencePanel: React.FC<EvidencePanelProps> = ({
 
               {/* Raw Data JSON Viewer */}
               {isRawOpen && ev.raw_data && (
-                <div className="mt-3 p-3 bg-slate-950 rounded-lg border border-slate-800 text-[11px] font-mono text-slate-300 overflow-x-auto">
+                <div className="mt-3 p-3 bg-slate-900 rounded-lg border border-slate-800 text-[11px] font-mono text-emerald-400 overflow-x-auto shadow-inner">
                   <pre>{JSON.stringify(ev.raw_data, null, 2)}</pre>
                 </div>
               )}
