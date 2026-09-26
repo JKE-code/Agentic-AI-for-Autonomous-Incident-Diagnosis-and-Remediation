@@ -112,21 +112,56 @@ def compute_hybrid_score(
         "rules_score": round(s_rules, 4)
     }
 
+from ai.models.llm import get_llm_client
+
+def get_llm_hypothesis_assessments(
+    hypotheses: List[Hypothesis],
+    incident: Incident,
+    evidence_list: List[Evidence]
+) -> Dict[str, float]:
+    """Call Gemini to semantically evaluate telemetry evidence against candidate hypotheses."""
+    llm = get_llm_client()
+    if not llm.is_available():
+        return {}
+        
+    ev_summary = "\n".join([f"- [{e.source}] {e.service}: {e.observation}" for e in evidence_list[:8]])
+    hyp_summary = "\n".join([f"- {h.hypothesis_id}: {h.cause} ({h.root_cause_category})" for h in hypotheses])
+    
+    prompt = f"""You are an expert SRE and AIOps root-cause investigator.
+Incident: {incident.incident_id} - {incident.title} (Severity: {incident.severity})
+Observed Telemetry Evidence:
+{ev_summary}
+
+Candidate Hypotheses:
+{hyp_summary}
+
+Based on the observed evidence, evaluate the plausibility (between 0.05 and 0.95) of each hypothesis being the true root cause.
+Output strictly JSON:
+{{"scores": {{"HYP-001": 0.85, "HYP-002": 0.20}}}}
+"""
+    res = llm.generate_json(prompt)
+    if res and "scores" in res and isinstance(res["scores"], dict):
+        return {k: float(v) for k, v in res["scores"].items() if isinstance(v, (int, float))}
+    return {}
+
 def rank_and_normalize_hypotheses(
     hypotheses: List[Hypothesis],
     incident: Incident,
     evidence_list: List[Evidence]
 ) -> List[Hypothesis]:
     """Apply hybrid scoring to each hypothesis, sort descending, and normalize scores."""
+    llm_scores = get_llm_hypothesis_assessments(hypotheses, incident, evidence_list)
     scored: List[Hypothesis] = []
     
     for h in hypotheses:
-        breakdown = compute_hybrid_score(h, incident, evidence_list)
+        s_llm = llm_scores.get(h.hypothesis_id)
+        breakdown = compute_hybrid_score(h, incident, evidence_list, llm_assessment_score=s_llm)
         h_copy = h.model_copy()
         h_copy.score = breakdown["final_score"]
-        # Confidence reflects strength of evidence and rules alignment
+        # Confidence reflects strength of evidence, cross-signal agreement, and rules alignment
         h_copy.confidence = round(min(0.96, (breakdown["rules_score"] * 0.5 + breakdown["cross_signal_score"] * 0.5)), 4)
         scored.append(h_copy)
         
     scored.sort(key=lambda x: x.score, reverse=True)
     return scored
+
