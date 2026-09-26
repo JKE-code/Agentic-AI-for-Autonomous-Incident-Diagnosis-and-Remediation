@@ -52,6 +52,12 @@ async def trigger_diagnosis(incident_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail="Failed to run diagnosis pipeline")
     return result
 
+@router.post("/reset_all")
+def reset_all(db: Session = Depends(get_db)):
+    from backend.services.incident_service import reset_all_incidents
+    reset_all_incidents(db)
+    return {"status": "RESET_ALL", "message": "All incident scenarios and sandbox state reset"}
+
 @router.post("/{incident_id}/reset")
 def reset_single_incident(incident_id: str, db: Session = Depends(get_db)):
     from backend.services.incident_service import reset_incident
@@ -59,9 +65,3 @@ def reset_single_incident(incident_id: str, db: Session = Depends(get_db)):
     if not success:
         raise HTTPException(status_code=404, detail=f"Incident {incident_id} not found")
     return {"status": "RESET", "incident_id": incident_id, "message": f"Incident {incident_id} state reset to OPEN"}
-
-@router.post("/reset_all")
-def reset_all(db: Session = Depends(get_db)):
-    from backend.services.incident_service import reset_all_incidents
-    reset_all_incidents(db)
-    return {"status": "RESET_ALL", "message": "All incident scenarios and sandbox state reset"}

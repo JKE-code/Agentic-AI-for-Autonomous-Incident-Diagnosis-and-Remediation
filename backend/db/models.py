@@ -64,7 +64,13 @@ class RemediationModel(Base):
     expected_effect = Column(Text, nullable=False)
     verification = Column(JSON, default=dict)
     requires_approval = Column(Boolean, default=True)
-    status = Column(String, default="PENDING_APPROVAL")  # PENDING_APPROVAL, APPROVED, EXECUTING, VERIFIED, FAILED, ROLLED_BACK
+    status = Column(String, default="PENDING_APPROVAL")  # PENDING_APPROVAL, APPROVED, EXECUTING, SUCCESS, FAILED, ROLLED_BACK
+    rollback_plan = Column(Text, nullable=True)
+    parameters = Column(JSON, default=dict)
+    health_before = Column(JSON, default=dict)
+    health_after = Column(JSON, default=dict)
+    approved_at = Column(String, nullable=True)
+    executed_at = Column(String, nullable=True)
     created_at = Column(String, default=utc_now_iso)
 
 class ApprovalModel(Base):

@@ -18,6 +18,7 @@ async def approve_action(action_id: str, request: ApprovalRequest = ApprovalRequ
 
     rem.status = "APPROVED"
     now_iso = datetime.now(timezone.utc).isoformat()
+    rem.approved_at = now_iso
 
     # Update parent incident status
     inc = db.query(IncidentModel).filter(IncidentModel.incident_id == rem.incident_id).first()

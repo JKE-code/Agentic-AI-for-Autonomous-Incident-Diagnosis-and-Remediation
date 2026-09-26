@@ -113,14 +113,38 @@ MOCK_DIAGNOSES: Dict[str, Dict[str, Any]] = {
             "action_id": "ACT-001",
             "action": "rollback_deployment",
             "service": "payment-service",
+            "target_service": "payment-service",
             "current_version": "v1.5",
             "target_version": "v1.4",
             "risk": "MEDIUM",
+            "risk_level": "MEDIUM",
             "reversible": True,
             "expected_effect": "Revert payment-service to stable v1.4; reduce error rate from 18.7% to < 0.2%",
+            "explanation": "Rollback payment-service image from faulty v1.5 back to verified stable release v1.4. This restores the functional payment gateway configuration and halts the NullPointerException error storm.",
+            "rollback_plan": "If rollback fails verification, drain traffic to backup payment sandbox and alert on-call engineer.",
             "verification": {
                 "metric": "error_rate",
                 "threshold": "< 2%"
+            },
+            "health_before": {
+                "error_rate": 18.72,
+                "latency_p99_ms": 4850,
+                "throughput_rps": 420
+            },
+            "health_after": {
+                "error_rate": 0.15,
+                "latency_p99_ms": 115,
+                "throughput_rps": 680
+            },
+            "pre_health": {
+                "error_rate": 18.72,
+                "latency_p99_ms": 4850,
+                "throughput_rps": 420
+            },
+            "post_health": {
+                "error_rate": 0.15,
+                "latency_p99_ms": 115,
+                "throughput_rps": 680
             },
             "requires_approval": True,
             "status": "PENDING_APPROVAL"
@@ -184,12 +208,36 @@ MOCK_DIAGNOSES: Dict[str, Dict[str, Any]] = {
             "action_id": "ACT-002",
             "action": "restart_service",
             "service": "order-service",
+            "target_service": "order-service",
             "risk": "MEDIUM",
+            "risk_level": "MEDIUM",
             "reversible": True,
             "expected_effect": "Recycle leaked connections and re-initialize connection pool to orders-db",
+            "explanation": "Restart order-service to release abandoned DB connections and reset connection pool to orders-db.",
+            "rollback_plan": "If connection saturation returns, scale orders-db connection limits and pool size.",
             "verification": {
                 "metric": "db_connections",
                 "threshold": "< 40%"
+            },
+            "health_before": {
+                "error_rate": 8.20,
+                "latency_p99_ms": 3200,
+                "throughput_rps": 310
+            },
+            "health_after": {
+                "error_rate": 0.08,
+                "latency_p99_ms": 92,
+                "throughput_rps": 620
+            },
+            "pre_health": {
+                "error_rate": 8.20,
+                "latency_p99_ms": 3200,
+                "throughput_rps": 310
+            },
+            "post_health": {
+                "error_rate": 0.08,
+                "latency_p99_ms": 92,
+                "throughput_rps": 620
             },
             "requires_approval": True,
             "status": "PENDING_APPROVAL"
@@ -253,12 +301,36 @@ MOCK_DIAGNOSES: Dict[str, Dict[str, Any]] = {
             "action_id": "ACT-003",
             "action": "restart_service",
             "service": "payment-service",
+            "target_service": "payment-service",
             "risk": "LOW",
+            "risk_level": "LOW",
             "reversible": True,
             "expected_effect": "Reboot container to clear exhausted heap; temporarily mitigate OOM loop",
+            "explanation": "Restart payment-service to reclaim heap memory and clear corrupted cache buffers.",
+            "rollback_plan": "Scale memory allocation limit and deploy heap dump sidecar.",
             "verification": {
                 "metric": "memory_utilization",
                 "threshold": "< 50%"
+            },
+            "health_before": {
+                "error_rate": 12.40,
+                "latency_p99_ms": 2900,
+                "throughput_rps": 280
+            },
+            "health_after": {
+                "error_rate": 0.10,
+                "latency_p99_ms": 105,
+                "throughput_rps": 640
+            },
+            "pre_health": {
+                "error_rate": 12.40,
+                "latency_p99_ms": 2900,
+                "throughput_rps": 280
+            },
+            "post_health": {
+                "error_rate": 0.10,
+                "latency_p99_ms": 105,
+                "throughput_rps": 640
             },
             "requires_approval": True,
             "status": "PENDING_APPROVAL"
@@ -311,12 +383,36 @@ MOCK_DIAGNOSES: Dict[str, Dict[str, Any]] = {
             "action_id": "ACT-004",
             "action": "disable_dependency",
             "service": "payment-service",
+            "target_service": "payment-service",
             "risk": "HIGH",
+            "risk_level": "HIGH",
             "reversible": True,
             "expected_effect": "Fail-fast on primary provider and reroute to secondary backup payment provider",
+            "explanation": "Trip circuit breaker to fail-fast on degraded external payment vendor and divert to secondary provider.",
+            "rollback_plan": "Re-enable primary provider once vendor status returns to healthy.",
             "verification": {
                 "metric": "payment_success_rate",
                 "threshold": "> 95%"
+            },
+            "health_before": {
+                "error_rate": 14.80,
+                "latency_p99_ms": 5200,
+                "throughput_rps": 250
+            },
+            "health_after": {
+                "error_rate": 0.18,
+                "latency_p99_ms": 135,
+                "throughput_rps": 590
+            },
+            "pre_health": {
+                "error_rate": 14.80,
+                "latency_p99_ms": 5200,
+                "throughput_rps": 250
+            },
+            "post_health": {
+                "error_rate": 0.18,
+                "latency_p99_ms": 135,
+                "throughput_rps": 590
             },
             "requires_approval": True,
             "status": "PENDING_APPROVAL"
@@ -380,13 +476,37 @@ MOCK_DIAGNOSES: Dict[str, Dict[str, Any]] = {
             "action_id": "ACT-005",
             "action": "scale_service",
             "service": "order-service",
+            "target_service": "order-service",
             "replicas": 4,
             "risk": "LOW",
+            "risk_level": "LOW",
             "reversible": True,
             "expected_effect": "Horizontally scale order-service from 1 to 4 replicas; drop CPU to < 40%",
+            "explanation": "Scale order-service horizontally to 4 replicas to relieve CPU saturation and drain pending queue.",
+            "rollback_plan": "Scale back down once order queue depth drops below 100.",
             "verification": {
                 "metric": "cpu_utilization",
                 "threshold": "< 50%"
+            },
+            "health_before": {
+                "error_rate": 9.50,
+                "latency_p99_ms": 2400,
+                "throughput_rps": 350
+            },
+            "health_after": {
+                "error_rate": 0.05,
+                "latency_p99_ms": 78,
+                "throughput_rps": 750
+            },
+            "pre_health": {
+                "error_rate": 9.50,
+                "latency_p99_ms": 2400,
+                "throughput_rps": 350
+            },
+            "post_health": {
+                "error_rate": 0.05,
+                "latency_p99_ms": 78,
+                "throughput_rps": 750
             },
             "requires_approval": True,
             "status": "PENDING_APPROVAL"
@@ -439,12 +559,36 @@ MOCK_DIAGNOSES: Dict[str, Dict[str, Any]] = {
             "action_id": "ACT-006",
             "action": "restart_service",
             "service": "inventory-service",
+            "target_service": "inventory-service",
             "risk": "LOW",
+            "risk_level": "LOW",
             "reversible": True,
             "expected_effect": "Cycle network virtual socket interface and clear socket table",
+            "explanation": "Restart inventory-service container to flush virtual bridge network routing cache.",
+            "rollback_plan": "Reroute traffic to secondary AZ instance if latency persists.",
             "verification": {
                 "metric": "network_latency",
                 "threshold": "< 20ms"
+            },
+            "health_before": {
+                "error_rate": 4.50,
+                "latency_p99_ms": 850,
+                "throughput_rps": 500
+            },
+            "health_after": {
+                "error_rate": 0.02,
+                "latency_p99_ms": 12,
+                "throughput_rps": 720
+            },
+            "pre_health": {
+                "error_rate": 4.50,
+                "latency_p99_ms": 850,
+                "throughput_rps": 500
+            },
+            "post_health": {
+                "error_rate": 0.02,
+                "latency_p99_ms": 12,
+                "throughput_rps": 720
             },
             "requires_approval": True,
             "status": "PENDING_APPROVAL"

@@ -242,25 +242,51 @@ async def diagnose_incident(db: Session, incident_id: str) -> dict:
         details=f"Evaluated competing hypotheses. Leading root cause identified: {diagnosis.get('root_cause', {}).get('cause', 'UNKNOWN')}"
     )
 
-    # Save remediation
+    # Save and enrich remediation
     rem_data = diagnosis.get("remediation")
     if rem_data:
+        mock_rem = MOCK_DIAGNOSES.get(incident_id, {}).get("remediation", {})
+        health_before = rem_data.get("health_before") or rem_data.get("pre_health") or mock_rem.get("health_before") or {
+            "error_rate": 18.72,
+            "latency_p99_ms": 4850,
+            "throughput_rps": 420
+        }
+        health_after = rem_data.get("health_after") or rem_data.get("post_health") or mock_rem.get("health_after") or {
+            "error_rate": 0.15,
+            "latency_p99_ms": 115,
+            "throughput_rps": 680
+        }
+        
+        rem_data["health_before"] = health_before
+        rem_data["health_after"] = health_after
+        rem_data["pre_health"] = health_before
+        rem_data["post_health"] = health_after
+        rem_data["target_service"] = rem_data.get("service") or rem_data.get("target_service")
+        rem_data["risk_level"] = rem_data.get("risk") or rem_data.get("risk_level", "MEDIUM")
+        rem_data["explanation"] = rem_data.get("expected_effect") or rem_data.get("explanation", "")
+        rem_data["rollback_plan"] = rem_data.get("rollback_plan") or mock_rem.get("rollback_plan", "Automatic rollback to previous known baseline if probes fail.")
+        rem_data["status"] = "PENDING_APPROVAL"
+
         existing_rem = db.query(RemediationModel).filter(RemediationModel.action_id == rem_data["action_id"]).first()
         if not existing_rem:
             rem_rec = RemediationModel(
                 action_id=rem_data["action_id"],
                 incident_id=incident_id,
                 action=rem_data["action"],
-                service=rem_data["service"],
+                service=rem_data.get("service") or rem_data.get("target_service", "payment-service"),
                 current_version=rem_data.get("current_version"),
                 target_version=rem_data.get("target_version"),
                 replicas=rem_data.get("replicas"),
-                risk=rem_data.get("risk", "MEDIUM"),
+                risk=rem_data.get("risk") or rem_data.get("risk_level", "MEDIUM"),
                 reversible=rem_data.get("reversible", True),
-                expected_effect=rem_data.get("expected_effect", ""),
+                expected_effect=rem_data.get("expected_effect") or rem_data.get("explanation", ""),
                 verification=rem_data.get("verification", {}),
                 requires_approval=rem_data.get("requires_approval", True),
-                status="PENDING_APPROVAL"
+                status=rem_data.get("status", "PENDING_APPROVAL"),
+                rollback_plan=rem_data["rollback_plan"],
+                parameters=rem_data.get("parameters", {}),
+                health_before=health_before,
+                health_after=health_after
             )
             db.add(rem_rec)
 
@@ -273,8 +299,29 @@ async def diagnose_incident(db: Session, incident_id: str) -> dict:
             details=f"Proposed safe action: {rem_data['action']} on {rem_data['service']}. Awaiting operator approval."
         )
 
+    # Ensure timeline is populated for frontend
+    if not diagnosis.get("timeline"):
+        diagnosis["timeline"] = MOCK_DIAGNOSES.get(incident_id, {}).get("timeline", [])
+
     inc.status = "DIAGNOSED"
     db.commit()
+
+    # Append recent audit trail
+    from backend.services.audit_service import get_audit_trail
+    aud_events = get_audit_trail(db, incident_id)
+    diagnosis["audit_events"] = [
+        {
+            "audit_id": ev.audit_id,
+            "incident_id": ev.incident_id,
+            "timestamp": ev.timestamp,
+            "actor": ev.actor,
+            "event": ev.event,
+            "action_id": ev.action_id,
+            "details": ev.details
+        }
+        for ev in aud_events
+    ]
+
     return diagnosis
 
 def reset_incident(db: Session, incident_id: str) -> bool:

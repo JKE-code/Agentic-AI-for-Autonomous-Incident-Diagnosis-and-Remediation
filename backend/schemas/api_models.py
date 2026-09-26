@@ -138,27 +138,50 @@ class RemediationAction(BaseModel):
     action_id: str
     action: ActionEnum
     service: str
+    target_service: Optional[str] = None
     current_version: Optional[str] = None
     target_version: Optional[str] = None
     replicas: Optional[int] = None
-    risk: RiskEnum
+    parameters: Optional[Dict[str, Any]] = None
+    risk: Optional[RiskEnum] = RiskEnum.MEDIUM
+    risk_level: Optional[str] = "MEDIUM"
     reversible: bool = True
-    expected_effect: str
-    verification: VerificationMetric
+    expected_effect: Optional[str] = None
+    explanation: Optional[str] = None
+    rollback_plan: Optional[str] = None
+    verification: Optional[VerificationMetric] = None
     requires_approval: bool = True
     status: str = "PENDING_APPROVAL"
+    health_before: Optional[Dict[str, Any]] = None
+    health_after: Optional[Dict[str, Any]] = None
+    pre_health: Optional[Dict[str, Any]] = None
+    post_health: Optional[Dict[str, Any]] = None
+    approved_at: Optional[str] = None
+    executed_at: Optional[str] = None
 
 class RootCauseInfo(BaseModel):
     hypothesis_id: Optional[str] = None
     cause: Optional[str] = None
     service: Optional[str] = None
     summary: Optional[str] = None
+    confidence: Optional[float] = None
+    score: Optional[float] = None
+    supporting_evidence: Optional[List[str]] = None
+    contradicting_evidence: Optional[List[str]] = None
+    tests: Optional[List[str]] = None
+    status: Optional[str] = None
 
 class TimelineEvent(BaseModel):
+    id: Optional[str] = None
     timestamp: str
-    service: str
-    event: str
-    source: str
+    timeDisplay: Optional[str] = None
+    service: Optional[str] = None
+    event: Optional[str] = None
+    title: Optional[str] = None
+    description: Optional[str] = None
+    source: Optional[str] = None
+    type: Optional[str] = None
+    severity: Optional[str] = None
 
 # Diagnosis Response
 class DiagnosisResponse(BaseModel):
@@ -192,9 +215,12 @@ class ExecutionResult(BaseModel):
     status: str
     pre_health: Dict[str, Any]
     post_health: Dict[str, Any]
+    health_before: Optional[Dict[str, Any]] = None
+    health_after: Optional[Dict[str, Any]] = None
     verified: bool
     message: str
     auto_rollback: bool = False
+    remediation: Optional[Dict[str, Any]] = None
 
 class RollbackResult(BaseModel):
     action_id: str
