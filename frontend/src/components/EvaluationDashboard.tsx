@@ -80,10 +80,6 @@ export const EvaluationDashboard: React.FC<EvaluationDashboardProps> = ({
               Evaluation Suite
             </span>
           </div>
-          <p className="text-xs text-slate-500 max-w-2xl leading-relaxed">
-            Head-to-head empirical evaluation comparing LangGraph Multi-Agent
-            Orchestration against a deterministic Rules-Based SRE Baseline across 6 distinct incident categories.
-          </p>
         </div>
 
         <div className="flex items-center gap-3">
@@ -219,25 +215,18 @@ export const EvaluationDashboard: React.FC<EvaluationDashboardProps> = ({
 
       {/* Calibration Card */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="p-4 rounded-2xl bg-white border border-slate-200 text-xs font-mono space-y-2 shadow-2xs">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-100 text-slate-700 font-bold">
-            <span>Brier Score (Mean Squared Calibration Error):</span>
-            <span className="text-emerald-700">Agentic: {brierAgentic}</span>
-          </div>
-          <p className="text-slate-500 text-[11px] font-sans">
-            Lower is strictly better. The agentic system achieves a Brier score of {brierAgentic} vs {brierRules} for rules,
-            demonstrating sharp probability calibration without hallucinated certainty.
-          </p>
+        <div className="p-3.5 rounded-xl bg-white border border-slate-200 text-xs font-mono flex items-center justify-between shadow-2xs">
+          <span className="text-slate-600 font-semibold">Brier Calibration Score (Lower is better):</span>
+          <span className="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+            Agentic: {brierAgentic} (vs Rules: {brierRules})
+          </span>
         </div>
 
-        <div className="p-4 rounded-2xl bg-white border border-slate-200 text-xs font-mono space-y-2 shadow-2xs">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-100 text-slate-700 font-bold">
-            <span>Benchmark Dataset:</span>
-            <span className="text-sky-700">6 Scenarios (100% Synthetic Production)</span>
-          </div>
-          <p className="text-slate-500 text-[11px] font-sans">
-            Evaluates BAD_DEPLOYMENT, DB_CONNECTION_EXHAUSTION, MEMORY_LEAK, DOWNSTREAM_FAILURE, CPU_SATURATION, and NETWORK_LATENCY.
-          </p>
+        <div className="p-3.5 rounded-xl bg-white border border-slate-200 text-xs font-mono flex items-center justify-between shadow-2xs">
+          <span className="text-slate-600 font-semibold">Benchmark Corpus:</span>
+          <span className="text-sky-700 font-bold bg-sky-50 px-2 py-0.5 rounded border border-sky-200">
+            6 Production Incident Categories
+          </span>
         </div>
       </div>
 

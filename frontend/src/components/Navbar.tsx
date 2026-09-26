@@ -61,17 +61,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Radio className="w-4 h-4 text-white" />
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-base font-bold text-slate-900 tracking-tight flex items-center gap-1.5">
-                <span>Remidi</span>
-                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200">
-                  AI SRE
-                </span>
-              </h1>
-            </div>
-            <p className="text-[11px] text-slate-500 font-medium hidden sm:block">
-              Autonomous Incident Diagnosis & Remediation Engine
-            </p>
+            <h1 className="text-base font-bold text-slate-900 tracking-tight flex items-center gap-1.5">
+              <span>Remidi</span>
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200">
+                AI SRE
+              </span>
+            </h1>
           </div>
         </div>
 

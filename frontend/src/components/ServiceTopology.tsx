@@ -273,15 +273,12 @@ export const ServiceTopology: React.FC<ServiceTopologyProps> = ({
               <Layers className="w-4 h-4" />
             </div>
             <h2 className="text-base font-bold text-slate-900 tracking-tight flex items-center gap-2">
-              Production Service Topology & Real-Time Flow Map
+              Topology & Flow Map
               <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200 font-semibold">
                 Live Trace Mesh
               </span>
             </h2>
           </div>
-          <p className="text-xs text-slate-500">
-            Interactive trace flow showing animated RPC traffic packets, dependency cascades, and localized fault hotspots.
-          </p>
         </div>
 
         {/* Action Toggles */}

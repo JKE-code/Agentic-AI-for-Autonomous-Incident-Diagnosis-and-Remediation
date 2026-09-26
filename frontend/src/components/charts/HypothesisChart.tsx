@@ -54,11 +54,8 @@ export const HypothesisChart: React.FC<HypothesisChartProps> = ({
           </div>
           <div>
             <h3 className="text-sm font-bold text-slate-900 tracking-tight">
-              Bayesian Root-Cause Likelihood Distribution
+              Root-Cause Likelihood
             </h3>
-            <p className="text-[11px] text-slate-500">
-              Posterior probability ranking computed across multi-modal evidence signals
-            </p>
           </div>
         </div>
 

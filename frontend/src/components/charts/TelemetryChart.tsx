@@ -67,22 +67,19 @@ export const TelemetryChart: React.FC<TelemetryChartProps> = ({
             </div>
             <div>
               <h3 className="text-sm font-bold text-slate-900 tracking-tight flex items-center gap-2">
-                Real-Time Telemetry & SLA Breach Timeline
+                Live Telemetry & SLA Breach
                 {isResolved ? (
                   <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold flex items-center gap-1">
                     <ShieldCheck className="w-3 h-3 text-emerald-600" />
-                    RECOVERY CONFIRMED
+                    RECOVERED
                   </span>
                 ) : (
                   <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-semibold flex items-center gap-1">
                     <AlertTriangle className="w-3 h-3 text-rose-600" />
-                    ACTIVE SPIKE
+                    BREACHED
                   </span>
                 )}
               </h3>
-              <p className="text-[11px] text-slate-500">
-                Visualizing correlated HTTP 5xx error budget burn and downstream p99 latency curve
-              </p>
             </div>
           </div>
         </div>

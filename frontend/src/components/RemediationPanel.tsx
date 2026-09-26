@@ -129,11 +129,8 @@ export const RemediationPanel: React.FC<RemediationPanelProps> = ({
         <div>
           <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-emerald-600" />
-            Autonomous Remediation & Human Approval Gate
+            Remediation & Approval
           </h3>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Strict safety policy: risky remediation actions require explicit operator confirmation before sandbox execution.
-          </p>
         </div>
 
         <div className="flex items-center gap-2">

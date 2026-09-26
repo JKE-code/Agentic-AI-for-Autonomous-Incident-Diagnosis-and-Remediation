@@ -77,11 +77,8 @@ export const EvidenceBreakdownChart: React.FC<EvidenceBreakdownChartProps> = ({
           </div>
           <div>
             <h3 className="text-sm font-bold text-slate-900 tracking-tight">
-              Multi-Modal Evidence Synthesis
+              Evidence Signal Sources
             </h3>
-            <p className="text-[11px] text-slate-500">
-              Cross-telemetry breakdown across {evidence.length} ingested signal observations
-            </p>
           </div>
         </div>
 

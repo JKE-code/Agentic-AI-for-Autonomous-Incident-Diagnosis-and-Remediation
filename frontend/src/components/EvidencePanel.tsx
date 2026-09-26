@@ -89,11 +89,8 @@ export const EvidencePanel: React.FC<EvidencePanelProps> = ({
           <div>
             <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
               <BarChart2 className="w-4 h-4 text-sky-600" />
-              Evidence Observations ({filteredEvidence.length} Filtered)
+              Evidence Observations ({filteredEvidence.length})
             </h3>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Click any source pill or donut segment above to isolate telemetry traces.
-            </p>
           </div>
 
           {/* Search */}
